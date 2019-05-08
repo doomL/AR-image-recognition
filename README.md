@@ -9,3 +9,4 @@ University Thesis for 4.0 Industry with Augmented Reality web based.
 
 * pip install opencv-python==3.4.2.16
 
+* pip install opencv-contrib-python==3.4.2.16
