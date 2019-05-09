@@ -19,7 +19,7 @@ print(len(imgArray), "la lunghezza dell'array")
 videoCapture = cv.VideoCapture(0)
 
 #-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
-minHessian = 100
+minHessian = 500
 detector = cv.xfeatures2d_SURF.create(hessianThreshold=minHessian)
 
 # keypoints1, descriptors1 = detector.detectAndCompute(img1, None)
@@ -39,14 +39,13 @@ matcher = cv.DescriptorMatcher_create(cv.DescriptorMatcher_FLANNBASED)
 #-- Filter matches using the Lowe's ratio test
 ratio_thresh = 0.5
 
-
 good_matches= []
 
 #-- Show detected matches
 #cv.imshow('Good Matches', img_matches
 #cv.imwrite('sift.jpg',img_matches)
 
-img_matches = None
+# img_matches = None
 while videoCapture.isOpened():
 	for index in range(len(imgArray)):
 		ret, frame = videoCapture.read()
@@ -58,20 +57,19 @@ while videoCapture.isOpened():
 		for m,n in knn_matchesFrame:
 			if m.distance < ratio_thresh * n.distance:
 				good_matches.append(m)
-		print("Punti trovati",len(good_matches))
-		
+		print("Punti trovati",len(good_matches)," Banconota ",index)
+		#percentage=good_
 	#-- Draw matches
 		img_matches = np.empty((max(imgArray[index].shape[0], frame.shape[0]), imgArray[index].shape[1]+frame.shape[1], 3), dtype=np.uint8)
-		cv.drawMatches(imgArray[index], keypointsArr[index], frame, keypointsFrame, good_matches, img_matches, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-		gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-		cv.waitKey(50)
+		cv.drawMatches(imgArray[index],keypointsArr[index] , frame, keypointsFrame, good_matches, img_matches, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+		#gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+		cv.waitKey(1)
 		cv.imshow('View',img_matches)
-  
-	if cv.waitKey(1) & 0xFF == ord('q'):
-		print("tasto premuto")
-		break
-
-	good_matches.clear()
+		#cv.imshow('View',frame)
+		if good_matches != None and len(good_matches)>=20:
+			print("Banconota ",index)
+			break
+		good_matches.clear()
 
 
 videoCapture.release()
