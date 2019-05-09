@@ -16,7 +16,6 @@ if img1 is None or img2 is None:
 
 
 
-
 videoCapture = cv.VideoCapture(0)
 
 #-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
