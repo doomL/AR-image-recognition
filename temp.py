@@ -66,7 +66,7 @@ while videoCapture.isOpened():
 		gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 		cv.waitKey(50)
 		cv.imshow('View',img_matches)
-
+  
 	if cv.waitKey(1) & 0xFF == ord('q'):
 		print("tasto premuto")
 		break
