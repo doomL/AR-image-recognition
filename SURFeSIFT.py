@@ -3,6 +3,8 @@ import cv2 as cv
 import numpy as np
 import argparse
 import glob
+import sys
+
 
 class LoadImg:
 	def __init__(self):
@@ -18,6 +20,8 @@ class LoadImg:
 
 		if self.imgArray is None:
 			print('Could not open or find the images!')
+
+
 class DisplayData:
 	def __init__(self,LoadImg):
 		self.rows,self.cols,self.channels = LoadImg.imgData.shape
@@ -45,7 +49,6 @@ def main():
 	loader=LoadImg()
 	data=DisplayData(loader)
 	#inizialize camera
-	videoCapture = cv.VideoCapture(0)
 
 	#-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
 	minHessian = 500
@@ -64,9 +67,10 @@ def main():
 	#-- Filter matches using the Lowe's ratio test
 	ratio_thresh = 0.6
 
+	videoCapture = cv.VideoCapture(0)
 	good_matches= []
-
-	while videoCapture.isOpened():
+	exit = False
+	while videoCapture.isOpened() and not exit:
 		for index in range(len(loader.imgArray)):
 			ret, frame = videoCapture.read()
 
@@ -82,19 +86,25 @@ def main():
 			img_matches = np.empty((max(loader.imgArray[index].shape[0], frame.shape[0]), loader.imgArray[index].shape[1]+frame.shape[1], 3), dtype=np.uint8)
 			cv.drawMatches(loader.imgArray[index],keypointsArr[index] , frame, keypointsFrame, good_matches, img_matches, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
 			#gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-			cv.waitKey(1)
-			#cv.imshow('View',img_matches)
 			cv.imshow('View',frame)
+
+			if cv.waitKey(1) == 27:
+				exit = True
+			
+
+			# cv.destroyAllWindows()
+			#cv.imshow('View',img_matches)
 			if good_matches != None and len(good_matches)>=20:
 				print("Banconota ",index)
 				data.print(frame,loader)
 			
 			good_matches.clear()
 
+	if exit:
+		videoCapture.release()
+		cv.destroyAllWindows()
 
-	videoCapture.release()
-	cv.destroyAllWindows()
-	cv.waitKey()
+	
 
 if __name__ == "__main__":
 	main()
