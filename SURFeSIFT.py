@@ -26,19 +26,11 @@ class DisplayData:
 		self.mask_inv = cv.bitwise_not(self.mask)
 	
 	def print(self,frame,LoadImg):
-		roi = frame[0:self.rows, 0:self.cols]
-			
-		# Now black-out the area of logo in ROI
-		videoCamera_bg = cv.bitwise_and(roi,roi,mask = self.mask_inv)
-
-		# Take only region of logo from logo image.
-		imgData_fg = cv.bitwise_and(LoadImg.imgData,LoadImg.imgData,mask = self.mask)
-
-		# Put logo in ROI and modify the main image
-		dst = cv.add(videoCamera_bg,imgData_fg)
-
-		frame[0:self.rows, 0:self.cols ] = dst
-		cv.imshow("dwad",LoadImg.imgData)
+		alpha = 0
+		# Select the region in the frame where we want to add the image and add the images using cv2.addWeighted()
+		added_image = cv.addWeighted(frame[150:250,150:250,:],alpha,LoadImg.imgData[0:100,0:100,:],1-alpha,0)
+    	# Change the region with the result
+		frame[150:250,150:250] = added_image
 
 def main():
 
@@ -84,10 +76,11 @@ def main():
 			#gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 			cv.waitKey(1)
 			#cv.imshow('View',img_matches)
-			cv.imshow('View',frame)
 			if good_matches != None and len(good_matches)>=20:
 				print("Banconota ",index)
 				data.print(frame,loader)
+			
+			cv.imshow('View',frame)
 			
 			good_matches.clear()
 
