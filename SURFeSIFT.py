@@ -7,8 +7,9 @@ import glob
 # img1 = cv.imread('images/10.jpg')
 # img2 = cv.imread('images/2.jpg')
 imgArray = [cv.imread(file) for file in glob.glob("images/dataset/*.jpg")]
-
 print(len(imgArray), "la lunghezza dell'array")
+
+imgData = cv.imread('images/maintenance.jpg',-1)
 
 # if img1 is None or img2 is None:
     # print('Could not open or find the images!')
@@ -20,7 +21,7 @@ videoCapture = cv.VideoCapture(0)
 
 #-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
 minHessian = 500
-detector = cv.xfeatures2d_SURF.create(hessianThreshold=minHessian)
+detector = cv.xfeatures2d_SIFT.create()
 
 # keypoints1, descriptors1 = detector.detectAndCompute(img1, None)
 # keypoints2, descriptors2 = detector.detectAndCompute(img2, None)
@@ -37,7 +38,7 @@ for curr_img in range(len(imgArray)):
 matcher = cv.DescriptorMatcher_create(cv.DescriptorMatcher_FLANNBASED)
 # knn_matches = matcher.knnMatch(descriptors1, descriptors2, 2)
 #-- Filter matches using the Lowe's ratio test
-ratio_thresh = 0.5
+ratio_thresh = 0.6
 
 good_matches= []
 
@@ -46,9 +47,30 @@ good_matches= []
 #cv.imwrite('sift.jpg',img_matches)
 
 # img_matches = None
+
+# I want to put logo on top-left corner, So I create a ROI
+rows,cols,channels = imgData.shape
+
+# Now create a mask of logo and create its inverse mask also
+imgDatagray = cv.cvtColor(imgData,cv.COLOR_BGR2GRAY)
+ret, mask = cv.threshold(imgDatagray, 10, 255, cv.THRESH_BINARY)
+mask_inv = cv.bitwise_not(mask)
+
 while videoCapture.isOpened():
 	for index in range(len(imgArray)):
 		ret, frame = videoCapture.read()
+		roi = frame[0:rows, 0:cols ]
+		print(rows, " ", cols)
+		# Now black-out the area of logo in ROI
+		videoCamera_bg = cv.bitwise_and(roi,roi,mask = mask_inv)
+
+		# Take only region of logo from logo image.
+		imgData_fg = cv.bitwise_and(imgData,imgData,mask = mask)
+
+		# Put logo in ROI and modify the main image
+		dst = cv.add(videoCamera_bg,imgData_fg)
+
+		frame[0:rows, 0:cols ] = dst
 		keypointsFrame, descriptorsFrame = detector.detectAndCompute(frame, None)
 		knn_matchesFrame = matcher.knnMatch(descriptorsArr[index], descriptorsFrame, 2)
 	#for curr_desc in range(len(descriptorsArr)):
@@ -64,8 +86,8 @@ while videoCapture.isOpened():
 		cv.drawMatches(imgArray[index],keypointsArr[index] , frame, keypointsFrame, good_matches, img_matches, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
 		#gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 		cv.waitKey(1)
-		cv.imshow('View',img_matches)
-		#cv.imshow('View',frame)
+		#cv.imshow('View',img_matches)
+		cv.imshow('View',frame)
 		if good_matches != None and len(good_matches)>=20:
 			print("Banconota ",index)
 			break
@@ -73,4 +95,5 @@ while videoCapture.isOpened():
 
 
 videoCapture.release()
+cv2.destroyAllWindows()
 cv.waitKey()
