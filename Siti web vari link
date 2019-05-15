@@ -15,5 +15,5 @@ programma labelling detector per le immagini
 https://github.com/Cartucho/OpenLabeling
 
 come usare YOLO, porta a 5 video di youtube + repo darknet da installare
- 1) https://github.com/ivangrov/YOLOv3-Series
- 2) repo darknte : https://github.com/AlexeyAB/darknet
+ 1) https://github.com/ivangrov/YOLOv3-Series non vanno bene
+ 2) repo darknte : https://github.com/AlexeyAB/darknet non vanno bene
