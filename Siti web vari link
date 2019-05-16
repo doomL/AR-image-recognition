@@ -21,3 +21,37 @@ come usare YOLO, porta a 5 video di youtube + repo darknet da installare
  
  Repo data da Angelo:
  https://github.com/claudiopetrini/face-detection-browser-opencv
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Prima di procedere con l'installazione di MySqlDb installare python 2.x 64 bit o 3.x 64bit
+ 
+Seguire questa guida per installare MySqlServer e Django 1.0
+ https://www.html.it/pag/17906/installazione-windows/
+ Per configurare MySql seguire:
+ https://www.youtube.com/watch?v=WuBcTJnIuzo
+ 
+ per installare Django scaricare il tar
+ estrarlo
+ entrare nella cartella estratta con il terminale windows
+ digitare da terminale py setup.py install
+ Aggiungere al nelle variabili d'ambiente Path il percorso di installazione che termina con \bin\
+ di solito : C:\Users\NOMEUTENTE\AppData\Local\Programs\Python\PythonNUMEROVERSIONE\Lib\site-packages\bin
+ 
+ e per verificare che tutto funzioni scrivere da terminale.
+  django-admin.py startproject esempio
+ 
+ 
+ 
+
+
