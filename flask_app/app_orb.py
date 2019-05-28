@@ -30,7 +30,7 @@ class VideoCamera(object):
 
    	#-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
       minHessian = 500
-      self.detector = cv2.xfeatures2d_SIFT.create()
+      self.detector = cv2.ORB_create(nfeatures=1200, scoreType=cv2.ORB_FAST_SCORE)
 
       self.keypointsArr = [None]*len(self.loader.imgArray)
       self.descriptorsArr = [None]*len(self.loader.imgArray)
@@ -41,12 +41,11 @@ class VideoCamera(object):
 	   #-- Step 2: Matching descriptor vectors with a FLANN based self.matcher
 
 	   # Since SURF is a floating-point descriptor NORM_L2 is used
-      self.matcher = cv2.DescriptorMatcher_create(cv2.DescriptorMatcher_FLANNBASED)
-	   #-- Filter matches using the Lowe's ratio test
+      self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+      #-- Filter matches using the Lowe's ratio test
       self.ratio_tresh = 0.6
 
 	   #videoCapture = cv2.VideoCapture(0)
-      self.good_matches= []
       exit = False
 
    def __del__(self):
@@ -57,30 +56,32 @@ class VideoCamera(object):
          ret, frame = self.video.read()
 
          keypointsFrame, descriptorsFrame = self.detector.detectAndCompute(frame, None)
-         knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArr[index], descriptorsFrame, 2)
+         #knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArr[index], descriptorsFrame, 2)
+         self.matches = self.matcher.match(self.descriptorsArr[index], descriptorsFrame)
+         self.matches = sorted(self.matches, key = lambda x: x.distance)
 
-         for m,n in knn_matchesFrame:
-            if m.distance < self.ratio_tresh * n.distance:
-               self.good_matches.append(m)
+         #for m,n in matches:
+          #  if m.distance < self.ratio_tresh * n.distance:
+          #     self.good_matches.append(m)
 			#print("Punti trovati",len(self.good_matches)," Banconota ",index)
 
-		#-- Draw matches
-      img_matches = np.empty((max(self.loader.imgArray[index].shape[0], frame.shape[0]), self.loader.imgArray[index].shape[1]+frame.shape[1], 3), dtype=np.uint8)
-      cv2.drawMatches(self.loader.imgArray[index],self.keypointsArr[index] , frame, keypointsFrame, self.good_matches, img_matches, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-		#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-      cv2.imshow('View',frame)
+         # print(len(self.matches))
 
-      if cv2.waitKey(1) == 27:
-         exit = True
+         if len(self.matches) >= 510: 
+            print("Trovata una corrispondenza con immagine ", index)
+
+		#-- Draw matches
+      # img_matches = np.empty((max(self.loader.imgArray[index].shape[0], frame.shape[0]), self.loader.imgArray[index].shape[1]+frame.shape[1], 3), dtype=np.uint8)
+      # cv2.drawMatches(self.loader.imgArray[index],self.keypointsArr[index] , frame, keypointsFrame, self.good_matches, img_matches, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+		#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+      # cv2.imshow('View',frame)
+
+      # if cv2.waitKey(1) == 27:
+      #    exit = True
 			
 
 		# cv2.destroyAllWindows()
 		#cv2.imshow('View',img_matches)
-      if self.good_matches != None and len(self.good_matches)>=20:
-         print("Banconota ",index)
-         #data.print(frame,self.loader)
-   
-      self.good_matches.clear()
       success, image = self.video.read()
       ret, jpeg = cv2.imencode('.jpg', image)
       return jpeg.tobytes()
