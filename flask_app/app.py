@@ -5,8 +5,15 @@ import argparse
 import glob
 import sys
 from flask import Flask, render_template, Response
+from flask_mysqldb import MySQL 
 
 app = Flask(__name__)
+app.config['MYSQL_HOST'] = 'hostremotemyslq.com:3306'
+app.config['MYSQL_USER'] = 'LZAHaN9tbA'
+app.config['MYSQL_PASSWORD'] = 'DcbgVhCK63'
+app.config['MYSQL_DB'] = 'LZAHaN9tbA'
+
+mySql = MySQL(app)
 
 @app.route('/')
 def index():
@@ -21,6 +28,13 @@ def gen(camera):
 def video_feed():
    return Response(gen(VideoCamera()),mimetype='multipart/x-mixed-replace; boundary=frame')
 					
+
+@app.route('/login',methods=['GET', 'POST'])
+   def login():
+      details = request.form
+
+
+
 class VideoCamera(object):
    def __init__(self):
       self.video = cv2.VideoCapture(0)
