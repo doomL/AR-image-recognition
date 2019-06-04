@@ -5,9 +5,15 @@ import argparse
 import glob
 import sys
 from flask import Flask, render_template, Response
+from flask_mysqldb import MySQL 
 
 app = Flask(__name__)
+app.config['MYSQL_HOST'] = 'hostremotemyslq.com:3306'
+app.config['MYSQL_USER'] = 'LZAHaN9tbA'
+app.config['MYSQL_PASSWORD'] = 'DcbgVhCK63'
+app.config['MYSQL_DB'] = 'LZAHaN9tbA'
 
+mySql = MySQL(app)
 
 @app.route('/')
 def index():
