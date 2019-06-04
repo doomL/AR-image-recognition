@@ -2,7 +2,8 @@
 University Thesis for 4.0 Industry with Augmented Reality web based.
 
 ### Installing Requirements
- 
+* Is recomended to use a VirtualEnviroment
+
 * *pip install pip install matplotlib*
 
 * *pip install opencv-python==3.4.2.16*
@@ -16,3 +17,13 @@ University Thesis for 4.0 Industry with Augmented Reality web based.
 * *pip install mysqlclient-1.x.x...whl*
 
 * *pip install flask-mysqldb*
+
+### Flask Configuration
+
+* *set FLASK_APP=app_sift.py*
+
+### Running Flask
+
+* *flask run*
+
+* app displayed on localhost:5000
