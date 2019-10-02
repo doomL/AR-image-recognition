@@ -4,8 +4,11 @@ import numpy as np
 import argparse
 import glob
 import sys
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 from flask_mysqldb import MySQL 
+import base64
+import io
+from PIL import Image
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'hostremotemyslq.com:3306'
@@ -17,7 +20,7 @@ mySql = MySQL(app)
 
 @app.route('/')
 def index():
-    return render_template('hello.html')
+    return render_template('index.html')
 
 
 def gen(camera):
@@ -30,6 +33,20 @@ def gen(camera):
 def video_feed():
     return Response(gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/login',methods=['GET', 'POST'])
+def login():
+    details = request.form
+
+
+@app.route('/admin',methods=['GET', 'POST'])
+def admin():
+    return render_template('admin.html')
+    
+@app.route('/adminm',methods=['POST'])
+def adminm():
+    #print(request.form)
+    string=request.form["images[0][url]"]
+    CalcFeature(string)
 
 class VideoCamera(object):
     def __init__(self):
@@ -95,6 +112,26 @@ class VideoCamera(object):
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
+class CalcFeature:
+    def __init__(self,img):
+        #print("dwadwa")
+        #print(img[23:-1])
+        #images = np.array(base64.b64decode(img[23:-1]))
+        #imag=cv2.imdecode(images,1)
+        detector = cv2.xfeatures2d_SURF.create(hessianThreshold=200)
+        keypointsImg, descriptorsImg = detector.detectAndCompute(self.toRGB(self.stringToImage(img)), None)
+        print(keypointsImg)
+        
+        # Take in base64 string and return PIL image
+    def stringToImage(self,base64_string):
+        base64_string += "=" * ((4 - len(base64_string) % 4) % 4) #ugh
+        imgdata = base64.b64decode(base64_string)
+        return Image.open(io.BytesIO(imgdata))
+
+    # convert PIL Image to an RGB image( technically a numpy array ) that's compatible with opencv
+    def toRGB(self,image):
+        return cv2.cvtColor(np.array(image), cv2.COLOR_BGR2RGB)
+        
 
 class LoadImg:
     def __init__(self):

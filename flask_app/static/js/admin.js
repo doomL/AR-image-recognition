@@ -204,6 +204,15 @@
             notification.append('<div class="error btn"><p><strong>Error:</strong> Please fill in the form.</p><span><i class=\"fa fa-times\" aria-hidden=\"true\"></i></span></div>')
           } else {
             notification.append('<div class="success btn"><p><strong>Success:</strong> '+ ID +' is submitted.</p><span><i class=\"fa fa-times\" aria-hidden=\"true\"></i></span></div>')
+            
+            $.ajax({ 
+              url: '/adminm', 
+              type: 'POST', 
+              data: {'name':stock.name,'model':stock.model,'type':stock.type,'floor':stock.floor,'images':stock.images},
+              success: function(response){ 
+                notification.append('<div class="success btn"><p><strong>Success:</strong> '+ ID +' is pushed.</p><span><i class=\"fa fa-times\" aria-hidden=\"true\"></i></span></div>')
+              } 
+            })
             queue.push(stock)
             reset()
           }
