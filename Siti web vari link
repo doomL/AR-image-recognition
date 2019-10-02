@@ -1,3 +1,7 @@
+VIDEO SPIEGAZIONE DIFFERENZE ALGORITMI
+https://www.coursera.org/lecture/ar-technologies-video-streaming/3-7-brisk-T6CnA
+
+
 // vari matcher che usano ORB, SIFT SURFF
 https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_matcher/py_matcher.html
 
@@ -50,6 +54,17 @@ Seguire questa guida per installare MySqlServer e Django 1.0
  
  e per verificare che tutto funzioni scrivere da terminale.
   django-admin.py startproject esempio
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  SAVE LIVE STREAM IN NODEJS 
+  https://www.npmjs.com/package/recordrtc  with live Demo :D enjoy
  
  
  
