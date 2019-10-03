@@ -72,18 +72,11 @@ class VideoCamera(object):
             for m, n in knn_matchesFrame:
                 if m.distance < self.ratio_tresh * n.distance:
                     self.good_matches.append(m)
-    #print("Punti trovati",len(self.good_matches)," Banconota ",index)
 
 
 
-    #-- Draw matches
         img_matches = np.empty((max(self.loader.imgArray[index].shape[0], frame.shape[0]),self.loader.imgArray[index].shape[1]+frame.shape[1], 3), dtype=np.uint8)
-        #   cv2.drawMatches(self.loader.imgArray[index], self.keypointsArr[index], frame, keypointsFrame,
-                        #   self.good_matches, img_matches, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #   cv2.imshow('View', frame)
-    # cv2.destroyAllWindows()
-    #cv2.imshow('View',img_matches)
+
 
         print(len(self.good_matches))
         if self.good_matches != None and len(self.good_matches) >= 30:

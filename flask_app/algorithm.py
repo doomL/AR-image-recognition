@@ -9,13 +9,14 @@ from flask_mysqldb import MySQL
 import base64
 import io
 from PIL import Image
+import AlgorithmChooser
 
 MIN_MATCHES=25
      
 class Algorithm(object):
     def __init__(self):
+        # self.algorithm = AlgorithmChooser
         self.loader = LoadImg()
-
         #-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
         minHessian = 500
         self.detector = cv2.xfeatures2d_SIFT.create()
