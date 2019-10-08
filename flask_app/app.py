@@ -17,8 +17,8 @@ app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
 socketio = SocketIO(app)
 # currAlgorithm=1
-# algChoose = SiftAlgorithm()
-algChoose = SurfAlgorithm()
+algChoose = SiftAlgorithm()
+# algChoose = SurfAlgorithm()
 context = Context.Context(algChoose)
 
 camera = Camera(context)

@@ -217,13 +217,12 @@
   <!-- sidebar-wrapper  -->
   <main class="page-content">
     <div class="container-fluid">
-      <h2>OPENCV IMAGE</h2>
+      
         <img src="{{ url_for('video_feed') }}" class="col-lg-12">
         <H2>DIRECT STREAM</H2>  
         <video autoplay="true" id="videoElement" class="col-lg-12"></video>
           <!--<img id="imageElement" src="{{ url_for('video_feed') }}">-->
           <canvas id="canvasElement" hidden="true"></canvas>
-
 
           <form action="/saveVideo/" method="post">
             <button name="saveBtn" type="submit">SaveVideo</button>

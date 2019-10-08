@@ -14,6 +14,7 @@ class AlgorithmChooser(ABC):
 class SiftAlgorithm():
     def __init__(self):
         print("SIFT")
+        self.cont = 0
         self.loader=loadImg()
         minHessian = 500
         self.detector = cv2.xfeatures2d_SIFT.create()
@@ -42,11 +43,16 @@ class SiftAlgorithm():
                 if m.distance < self.ratio_tresh * n.distance:
                     self.good_matches.append(m)
 
-        print("GOOD MATCHES", len(self.good_matches))
+        # print("GOOD MATCHES", len(self.good_matches))
 
-        if self.good_matches != None and len(self.good_matches) >= 40:
-            print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches),"MATCHES")
-
+        if self.good_matches != None and len(self.good_matches) >= 25:
+            self.cont += 1
+            print ("CONT",self.cont)
+            if self.cont>=2:
+                print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches),"MATCHES")
+                self.cont = 0
+        else:
+            self.cont = 0
         self.good_matches.clear()
         
 
@@ -60,6 +66,7 @@ class SurfAlgorithm(AlgorithmChooser):
 
     def __init__(self):
         print("SURF")
+        self.cont=0
         self.loader = loadImg()
         minHessian = 500
         self.detector = cv2.xfeatures2d_SURF.create()
@@ -94,11 +101,16 @@ class SurfAlgorithm(AlgorithmChooser):
                 if m.distance < self.ratio_tresh * n.distance:
                     self.good_matches.append(m)
 
-        print("GOOD MATCHES", len(self.good_matches))
+        # print("GOOD MATCHES", len(self.good_matches))
 
-        if self.good_matches != None and len(self.good_matches) >= 27:
-            print("TROVATA BANCONOTA ", index, "CON ",
-                  len(self.good_matches), "MATCHES")
+        if self.good_matches != None and len(self.good_matches) >= 30:
+            # print("HO TROVATO", len(self.good_matches))
+            self.cont+=1
+            print("CONT : ",self.cont)
+            if self.cont>=2:
+                print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches), "MATCHES")
+                self.cont = 0
+        else :
+            self.cont = 0
 
         self.good_matches.clear()
-
