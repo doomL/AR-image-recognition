@@ -219,7 +219,20 @@
     <div class="container-fluid">
       
         <img src="{{ url_for('video_feed') }}" class="col-lg-12">
-        <H2>DIRECT STREAM</H2>  
+        <H2>DIRECT STREAM</H2> 
+        
+        <form action="/chooseAlgorithm/" method="post">
+        <!-- <div class="dropdown"> -->
+          <select class="dropbtn" id="alg" name="alg">Dropdown
+          <!-- <div class="dropdown-content" id="alg" name="alg"> -->
+            <option id="0" value="0">SIFT</a>
+            <option id="1" value="1">SURF</a>
+            <option id="2" value="2">ORB</a>
+          <!-- </div>
+        </div>  -->
+        </select>
+        </form>
+        
         <video autoplay="true" id="videoElement" class="col-lg-12"></video>
           <!--<img id="imageElement" src="{{ url_for('video_feed') }}">-->
           <canvas id="canvasElement" hidden="true"></canvas>

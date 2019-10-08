@@ -1,6 +1,6 @@
 from sys import stdout
 import logging
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, Request
 from flask_socketio import SocketIO
 from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
@@ -16,7 +16,9 @@ log.setLevel(logging.ERROR)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
 socketio = SocketIO(app)
-# currAlgorithm=1
+# 0 = DEFAULT ALGORITHM SIFT
+currAlgorithm = 0 
+
 algChoose = SiftAlgorithm()
 # algChoose = SurfAlgorithm()
 context = Context.Context(algChoose)
@@ -39,6 +41,13 @@ def test_connect():
 def index():
     """Video streaming home page."""
     return render_template('index.html')
+
+
+@app.route("/chooseAlgorithm/", methods=['POST'])
+def chooseAlg():
+    Request.form.get("alg")
+    print(alg)
+
 
 @app.route("/saveVideo/", methods=['POST'])
 def saveVideo():
