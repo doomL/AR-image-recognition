@@ -3,12 +3,11 @@ import binascii
 from time import sleep
 from utils import base64_to_pil_image, pil_image_to_base64
 
-
-class Camera(object):
-    def __init__(self, algorithm):
+class Camera:
+    def __init__(self, context):
         self.to_process = []
         self.to_output = []
-        self.algorithm = algorithm
+        self.context = context
 
         thread = threading.Thread(target=self.keep_processing, args=())
         thread.daemon = True
@@ -18,22 +17,23 @@ class Camera(object):
         if not self.to_process:
             return
 
+
         # input is an ascii string. 
-        input_str = self.to_process.pop(0)
-
+        self.input_str = self.to_process.pop(0)
         # convert it to a pil image
-        input_img = base64_to_pil_image(input_str)
-
+        self.input_img = base64_to_pil_image(self.input_str)
         ################## where the hard work is done ############
         # output_img is an PIL image
-        output_img = self.algorithm.apply_algorithm(input_img)
-
+        # self.output_img = self.context.doAlgorithm(self.input_img)
+        if  self.input_img != None:
+            self.context.doAlgorithm(self.input_img)
+        # print(self.output_img)
         # output_str is a base64 string in ascii
-        output_str = pil_image_to_base64(output_img)
-
+        # self.output_str = pil_image_to_base64(self.output_img)
         # convert eh base64 string in ascii to base64 string in _bytes_
-        self.to_output.append(binascii.a2b_base64(output_str))
+        # self.to_output.append(binascii.a2b_base64(self.output_str))
 
+        
     def keep_processing(self):
         while True:
             self.process_one()
@@ -50,4 +50,4 @@ class Camera(object):
         return self.to_output.pop(0)
 
     def __del__(self):
-        self.algorithm.__del__()
+        self.context.__del__()
