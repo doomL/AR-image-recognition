@@ -1,6 +1,6 @@
 from sys import stdout
 import logging
-from flask import Flask, render_template, Response, Request
+from flask import Flask, render_template, Response, request, redirect
 from flask_socketio import SocketIO
 from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
@@ -16,11 +16,16 @@ log.setLevel(logging.ERROR)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
 socketio = SocketIO(app)
+
+def switchAlg(number):
+    if number == 0:
+        return SiftAlgorithm()
+    elif number == 1:
+        return SurfAlgorithm()
+
 # 0 = DEFAULT ALGORITHM SIFT
 currAlgorithm = 0 
-
-algChoose = SiftAlgorithm()
-# algChoose = SurfAlgorithm()
+algChoose = switchAlg(currAlgorithm)
 context = Context.Context(algChoose)
 
 camera = Camera(context)
@@ -43,15 +48,20 @@ def index():
     return render_template('index.html')
 
 
-@app.route("/chooseAlgorithm/", methods=['POST'])
+@app.route("/chooseAlg", methods=['POST'])
 def chooseAlg():
-    Request.form.get("alg")
-    print(alg)
+    print("CambioAlgoritmo")
+    currAlgorithm=request.form.get("alg")
+    print(currAlgorithm)
+    context = Context.Context(switchAlg(currAlgorithm))
+    camera = Camera(context)
+    return redirect("/")
 
 
 @app.route("/saveVideo/", methods=['POST'])
 def saveVideo():
-    camera.__del__()
+    print("dwadwadw")
+    #camera.__del__()
 
 def gen():
     """Video streaming generator function."""
@@ -62,10 +72,10 @@ def gen():
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
+    print ("prunt")
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

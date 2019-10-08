@@ -218,16 +218,17 @@
   <main class="page-content">
     <div class="container-fluid">
       
-        <img src="{{ url_for('video_feed') }}" class="col-lg-12">
+        <img src="{{ url_for('video_feed') }}" class="col-lg-12" hidden = "true">
         <H2>DIRECT STREAM</H2> 
         
-        <form action="/chooseAlgorithm/" method="post">
+        <form id="algForm" action="/chooseAlg" method="post">
         <!-- <div class="dropdown"> -->
-          <select class="dropbtn" id="alg" name="alg">Dropdown
+          <select class="dropbtn" id="alg" name="alg" onchange="this.form.submit()">Dropdown
           <!-- <div class="dropdown-content" id="alg" name="alg"> -->
-            <option id="0" value="0">SIFT</a>
-            <option id="1" value="1">SURF</a>
-            <option id="2" value="2">ORB</a>
+            <option id="0" value="0">SIFT</option>
+            <option id="1" value="1">SURF</option>
+            <option id="2" value="2">ORB</option>
+          
           <!-- </div>
         </div>  -->
         </select>

@@ -30,6 +30,7 @@ class SiftAlgorithm():
         self.good_matches = []
 
     def doAlgorithm(self, img):
+        print("SIIIIIIIIIIIIIFT")
         self.frame = np.asarray(img)
         # print("frame",self.frame)
         keypointsFrame, self.descriptorsFrame = self.detector.detectAndCompute(self.frame, None)
@@ -86,6 +87,7 @@ class SurfAlgorithm(AlgorithmChooser):
 
 
     def doAlgorithm(self, img):
+        print("SUUUUUURf")
         self.frame = np.asarray(img)
         # print("frame",self.frame)
         keypointsFrame, self.descriptorsFrame = self.detector.detectAndCompute(
