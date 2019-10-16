@@ -18,7 +18,7 @@ class SiftAlgorithm():
         self.loader=loadImg()
         minHessian = 500
         self.detector = cv2.xfeatures2d_SIFT.create()
-        print(len(self.loader.imgArray))
+        # print(len(self.loader.imgArray))
         self.keypointsArr = [None]*len(self.loader.imgArray)
         self.descriptorsArr = [None]*len(self.loader.imgArray)
         for curr_img in range(len(self.loader.imgArray)):
@@ -29,7 +29,7 @@ class SiftAlgorithm():
 
         self.good_matches = []
 
-    def doAlgorithm(self, img):
+    def doAlgorithm(self, img) -> bool:
         print("SIIIIIIIIIIIIIFT")
         self.frame = np.asarray(img)
         # print("frame",self.frame)
@@ -52,6 +52,7 @@ class SiftAlgorithm():
             if self.cont>=2:
                 print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches),"MATCHES")
                 self.cont = 0
+                return True
         else:
             self.cont = 0
         self.good_matches.clear()
@@ -71,7 +72,7 @@ class SurfAlgorithm(AlgorithmChooser):
         self.loader = loadImg()
         minHessian = 500
         self.detector = cv2.xfeatures2d_SURF.create()
-        print(len(self.loader.imgArray))
+        # print(len(self.loader.imgArray))
         self.keypointsArr = [None]*len(self.loader.imgArray)
         self.descriptorsArr = [None]*len(self.loader.imgArray)
         for curr_img in range(len(self.loader.imgArray)):
@@ -86,8 +87,8 @@ class SurfAlgorithm(AlgorithmChooser):
         self.good_matches = []
 
 
-    def doAlgorithm(self, img):
-        print("SUUUUUURf")
+    def doAlgorithm(self, img) -> bool:
+        print("SUUUUUURF")
         self.frame = np.asarray(img)
         # print("frame",self.frame)
         keypointsFrame, self.descriptorsFrame = self.detector.detectAndCompute(
@@ -112,6 +113,7 @@ class SurfAlgorithm(AlgorithmChooser):
             if self.cont>=2:
                 print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches), "MATCHES")
                 self.cont = 0
+                return True
         else :
             self.cont = 0
 

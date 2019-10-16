@@ -5,8 +5,9 @@ from flask_socketio import SocketIO
 from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
 import cv2
+import AlgorithmChooser
 from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm
-import Context
+from Context import Context
 
 
 app = Flask(__name__)
@@ -17,18 +18,22 @@ app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
 socketio = SocketIO(app)
 
+
+
+
 def switchAlg(number):
     if number == 0:
-        return SiftAlgorithm()
-    elif number == 1:
         return SurfAlgorithm()
+    elif number == 1:
+        return SiftAlgorithm()
 
-# 0 = DEFAULT ALGORITHM SIFT
+# 0 = DEFAULT ALGORITHM SURF
 currAlgorithm = 0 
-algChoose = switchAlg(currAlgorithm)
-context = Context.Context(algChoose)
+algChoose = switchAlg(None)
+context = Context(algChoose)
 
 camera = Camera(context)
+# surfAlg()
 
 @socketio.on('input image', namespace='/test')
 def test_message(input):
@@ -45,23 +50,63 @@ def test_connect():
 @app.route('/')
 def index():
     """Video streaming home page."""
-    return render_template('index.html')
+    return render_template('init.html')
 
 
-@app.route("/chooseAlg", methods=['POST'])
-def chooseAlg():
-    print("CambioAlgoritmo")
-    currAlgorithm=request.form.get("alg")
-    print(currAlgorithm)
-    context = Context.Context(switchAlg(currAlgorithm))
-    camera = Camera(context)
-    return redirect("/")
+# @app.route("/chooseAlg", methods=['POST'])
+# def chooseAlg():
+#     print("CambioAlgoritmo")
+#     currAlgorithm=request.form.get("alg")
+#     print(currAlgorithm)
+#     context = Context.Context(switchAlg(currAlgorithm))
+#     camera = Camera(context)
+#     return render_template("index.html")
 
 
 @app.route("/saveVideo/", methods=['POST'])
 def saveVideo():
-    print("dwadwadw")
+    print("Servlet di save video, per ora non va")
     #camera.__del__()
+
+
+# @app.route("/surf/", methods=['POST'])
+# def surfAlg():
+#     print("Surf servlet")
+#     # if context == None:
+#     #     print("Context prima A None")
+#     algChoose = switchAlg(0)
+#     context=Context.setStrategy2(algChoose)
+#     camera = Camera(context)
+#     if context == None:
+#         print("Context dopo A None")
+#     return render_template("index.html")
+
+
+@app.route("/sift/", methods=['POST'])
+def siftAlg():
+    print("Sift servlet")
+    # if context == None:
+    #     print("Context prima A None")
+    algChoose = switchAlg(1)
+    context.setStrategy2(algChoose)
+    camera = Camera(context)
+    if context == None:
+        print("Context dopo None")
+    return render_template("Index.html")
+
+
+@app.route("/surf/", methods=['POST'])
+def surfAlg():
+    print("Surf servlet")
+    # if context == None:
+    #     print("Context prima A None")
+    algChoose = switchAlg(0)
+    context.setStrategy2(algChoose)
+    camera = Camera(context)
+    if context == None:
+        print("Context dopo A None")
+    return render_template('index.html')
+
 
 def gen():
     """Video streaming generator function."""
@@ -82,3 +127,6 @@ def video_feed():
 if __name__ == '__main__':
     socketio.run(app,host='0.0.0.0',port=5000)
     
+
+
+

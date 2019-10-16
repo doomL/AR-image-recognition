@@ -27,12 +27,6 @@ class Camera:
         # self.output_img = self.context.doAlgorithm(self.input_img)
         if  self.input_img != None:
             self.context.doAlgorithm(self.input_img)
-        # print(self.output_img)
-        # output_str is a base64 string in ascii
-        # self.output_str = pil_image_to_base64(self.output_img)
-        # convert eh base64 string in ascii to base64 string in _bytes_
-        # self.to_output.append(binascii.a2b_base64(self.output_str))
-
         
     def keep_processing(self):
         while True:

@@ -15,18 +15,24 @@ MIN_MATCHES=25
 
 class Context:
     def __init__(self, strategyChoose : AlgorithmChooser):
+        print("Costruttore di Context")
         self.strategy = strategyChoose
 
     def doAlgorithm(self, img):
         self.strategy.doAlgorithm(img)
 
     #@AlgorithmChooser.setter
-    def setStrategy(self, strategyChoose: AlgorithmChooser) -> None:
+    def setStrategy(self, strategyChoose: AlgorithmChooser) :
         self.strategy = strategyChoose
+
+    def setStrategy2(self,strategyChoose):
+        self.strategy = strategyChoose
+    
 
     @property
     def getStrategy(self) -> AlgorithmChooser:
         return self.strategy
+
 
 
 
