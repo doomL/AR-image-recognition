@@ -1,7 +1,8 @@
 from sys import stdout
 import logging
-from flask import Flask, render_template, Response, request, redirect
+from flask import Flask, render_template, Response, request, redirect,url_for
 from flask_socketio import SocketIO
+from flask_mysqldb import MySQL
 from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
 import cv2
@@ -18,6 +19,13 @@ app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
 socketio = SocketIO(app)
 
+
+#Database Configuration
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_DB'] = 'arsistant'
+
+mysql=MySQL(app)
 
 
 
@@ -122,6 +130,22 @@ def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     print ("prunt")
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/admin',methods=['GET', 'POST'])
+def admin():
+    return render_template('admin.html')
+    
+@app.route('/adminm',methods=['POST'])
+def adminm():
+    #print(request.form)
+    imgString=request.form["images[0][url]"]
+    stringProva="dwadwafwa"
+    cur = mysql.connection.cursor()
+    print(cur.execute("INSERT INTO images(base64) VALUES('%s')" %(imgString)))
+    mysql.connection.commit()
+    cur.close()
+    return render_template('init.html')
 
 
 if __name__ == '__main__':
