@@ -28,7 +28,6 @@ app.config['MYSQL_DB'] = 'arsistant'
 mysql=MySQL(app)
 
 
-
 def switchAlg(number):
     if number == 0:
         return SurfAlgorithm()
@@ -39,7 +38,6 @@ def switchAlg(number):
 currAlgorithm = 0 
 algChoose = switchAlg(None)
 context = Context(algChoose)
-
 camera = Camera(context)
 # surfAlg()
 

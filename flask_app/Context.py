@@ -11,12 +11,13 @@ import io
 from PIL import Image
 import AlgorithmChooser 
 
-MIN_MATCHES=25
+# MIN_MATCHES=25
 
 class Context:
     def __init__(self, strategyChoose : AlgorithmChooser):
         print("Costruttore di Context")
         self.strategy = strategyChoose
+
 
     def doAlgorithm(self, img):
         self.strategy.doAlgorithm(img)
