@@ -18,6 +18,7 @@ class Context:
         print("Costruttore di Context")
         self.strategy = strategyChoose
 
+
     def doAlgorithm(self, img):
         self.strategy.doAlgorithm(img)
 

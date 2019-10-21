@@ -69,7 +69,7 @@ class SurfAlgorithm(AlgorithmChooser):
 
     def __init__(self):
         print("SURF")
-        self.surfMinMatches = 50
+        self.surfMinMatches = 45
         self.cont=0
         self.loader = loadImg()
         minHessian = 500

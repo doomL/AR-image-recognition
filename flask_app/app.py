@@ -30,7 +30,6 @@ def switchAlg(number):
 currAlgorithm = 0 
 algChoose = switchAlg(None)
 context = Context(algChoose)
-
 camera = Camera(context)
 # surfAlg()
 
