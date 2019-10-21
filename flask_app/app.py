@@ -20,7 +20,6 @@ socketio = SocketIO(app)
 
 
 
-
 def switchAlg(number):
     if number == 0:
         return SurfAlgorithm()

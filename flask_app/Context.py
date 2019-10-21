@@ -11,7 +11,7 @@ import io
 from PIL import Image
 import AlgorithmChooser 
 
-MIN_MATCHES=25
+# MIN_MATCHES=25
 
 class Context:
     def __init__(self, strategyChoose : AlgorithmChooser):

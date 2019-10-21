@@ -15,6 +15,7 @@ class SiftAlgorithm():
     def __init__(self):
         print("SIFT")
         self.cont = 0
+        self.siftMinMatches = 25
         self.loader=loadImg()
         minHessian = 500
         self.detector = cv2.xfeatures2d_SIFT.create()
@@ -46,7 +47,7 @@ class SiftAlgorithm():
 
         # print("GOOD MATCHES", len(self.good_matches))
 
-        if self.good_matches != None and len(self.good_matches) >= 25:
+        if self.good_matches != None and len(self.good_matches) >= self.siftMinMatches:
             self.cont += 1
             print ("CONT",self.cont)
             if self.cont>=2:
@@ -68,6 +69,7 @@ class SurfAlgorithm(AlgorithmChooser):
 
     def __init__(self):
         print("SURF")
+        self.surfMinMatches = 50
         self.cont=0
         self.loader = loadImg()
         minHessian = 500
@@ -106,7 +108,7 @@ class SurfAlgorithm(AlgorithmChooser):
 
         # print("GOOD MATCHES", len(self.good_matches))
 
-        if self.good_matches != None and len(self.good_matches) >= 30:
+        if self.good_matches != None and len(self.good_matches) >= self.surfMinMatches:
             # print("HO TROVATO", len(self.good_matches))
             self.cont+=1
             print("CONT : ",self.cont)
