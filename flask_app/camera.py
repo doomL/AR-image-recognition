@@ -1,5 +1,6 @@
 import threading
 import binascii
+import cv2
 from time import sleep
 from utils import base64_to_pil_image, pil_image_to_base64
 
@@ -8,10 +9,23 @@ class Camera:
         self.to_process = []
         self.to_output = []
         self.context = context
-
+        self.input_img = None
+        self.out= None
+        self.rec=False
         thread = threading.Thread(target=self.keep_processing, args=())
         thread.daemon = True
         thread.start()
+
+    def getInputImage(self):
+        return self.input_img
+
+    def recording(self,rec):
+        self.rec=rec
+        self.out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc(*'XVID'), 20.0, (self.input_img.size))
+
+    def stopRec(self,rec):
+        self.out.release()
+        self.rec=rec
 
     def process_one(self):
         if not self.to_process:
@@ -27,7 +41,8 @@ class Camera:
         # self.output_img = self.context.doAlgorithm(self.input_img)
         if  self.input_img != None:
             self.context.doAlgorithm(self.input_img)
-        
+        if self.rec:
+            self.out.write(np.asarray(self.input_img))
     def keep_processing(self):
         while True:
             self.process_one()
@@ -42,6 +57,3 @@ class Camera:
         while not self.to_output:
             sleep(0.05)
         return self.to_output.pop(0)
-
-    def __del__(self):
-        self.context.__del__()

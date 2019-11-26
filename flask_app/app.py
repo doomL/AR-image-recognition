@@ -3,13 +3,13 @@ import logging
 from flask import Flask, render_template, Response, request, redirect,url_for
 from flask_socketio import SocketIO
 from flask_mysqldb import MySQL
+import numpy as np
 from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
 import cv2
 import AlgorithmChooser
 from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm
 from Context import Context
-
 
 app = Flask(__name__)
 #app.logger.addHandler(logging.StreamHandler(stdout))
@@ -35,6 +35,8 @@ def switchAlg(number):
         return SiftAlgorithm()
 
 # 0 = DEFAULT ALGORITHM SURF
+
+
 currAlgorithm = 0 
 algChoose = switchAlg(None)
 context = Context(algChoose)
@@ -69,11 +71,16 @@ def index():
 #     return render_template("index.html")
 
 
+
 @app.route("/saveVideo/", methods=['POST'])
 def saveVideo():
-    print("Servlet di save video, per ora non va")
-    #camera.__del__()
-
+    if int(request.form['json_str'])%2==0:
+        print("Servlet di save video") 
+        camera.recording(True)
+    elif int(request.form['json_str'])%2!=0:
+        print("Servlet di stop video")
+        camera.stopRec(False)    
+    return "OK"
 
 # @app.route("/surf/", methods=['POST'])
 # def surfAlg():
