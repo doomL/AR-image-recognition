@@ -3,12 +3,9 @@ import logging
 from flask import Flask, render_template, Response, request, redirect,url_for
 from flask_socketio import SocketIO
 from flask_mysqldb import MySQL
-<<<<<<< HEAD
 import numpy as np
 from camera import Camera
-=======
 from Camera import Camera
->>>>>>> 6c24fa8f140b93dd477b7d8dbb992fb04cc2c4f9
 from utils import base64_to_pil_image, pil_image_to_base64
 import cv2
 import AlgorithmChooser

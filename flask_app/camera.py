@@ -10,15 +10,9 @@ class Camera:
         self.to_process = []
         self.to_output = []
         self.context = context
-<<<<<<< HEAD
         self.input_img = None
         self.out= None
         self.rec=False
-=======
-
-        self.videoSave = VideoSave() 
-
->>>>>>> 6c24fa8f140b93dd477b7d8dbb992fb04cc2c4f9
         thread = threading.Thread(target=self.keep_processing, args=())
         thread.daemon = True
         thread.start()
