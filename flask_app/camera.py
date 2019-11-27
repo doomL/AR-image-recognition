@@ -24,7 +24,6 @@ class Camera:
     def recording(self,rec):
         self.rec=rec
         self.out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 20.0, (self.input_img.size))
-        cv2.imwrite("img.jpg", np.asarray(self.input_img))
 
     def stopRec(self,rec):
         self.out.release()
@@ -43,8 +42,9 @@ class Camera:
         if  self.input_img != None:
             self.context.doAlgorithm(self.input_img)
         if self.rec:
-            self.out.write(np.asarray(self.input_img))
-        print("Sto Salvando Frame")
+            b,g,r = cv2.split(np.asarray(self.input_img))
+            self.out.write(cv2.merge([r,g,b]))
+            print("Sto Salvando Frame")
     def keep_processing(self):
         while True:
             self.process_one()
