@@ -5,7 +5,7 @@ from flask_socketio import SocketIO
 from flask_mysqldb import MySQL
 import numpy as np
 from camera import Camera
-from Camera import Camera
+#from Camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
 import cv2
 import AlgorithmChooser

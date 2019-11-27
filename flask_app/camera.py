@@ -3,7 +3,8 @@ import binascii
 import cv2
 from time import sleep
 from utils import base64_to_pil_image, pil_image_to_base64
-from VideoSave import VideoSave
+import numpy as np
+#from VideoSave import VideoSave
 
 class Camera:
     def __init__(self, context):
@@ -22,7 +23,8 @@ class Camera:
 
     def recording(self,rec):
         self.rec=rec
-        self.out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc(*'XVID'), 20.0, (self.input_img.size))
+        self.out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 20.0, (self.input_img.size))
+        cv2.imwrite("img.jpg", np.asarray(self.input_img))
 
     def stopRec(self,rec):
         self.out.release()
@@ -31,8 +33,6 @@ class Camera:
     def process_one(self):
         if not self.to_process:
             return
-
-
         # input is an ascii string. 
         self.input_str = self.to_process.pop(0)
         # convert it to a pil image
@@ -42,16 +42,9 @@ class Camera:
         # self.output_img = self.context.doAlgorithm(self.input_img)
         if  self.input_img != None:
             self.context.doAlgorithm(self.input_img)
-<<<<<<< HEAD
         if self.rec:
             self.out.write(np.asarray(self.input_img))
-=======
-
-            # se l'immagine non è None utilizzo save video per salvarmi 
-            # lo stream video.
-            self.videoSave.saveFrame(self.input_img)
-        
->>>>>>> 6c24fa8f140b93dd477b7d8dbb992fb04cc2c4f9
+        print("Sto Salvando Frame")
     def keep_processing(self):
         while True:
             self.process_one()
