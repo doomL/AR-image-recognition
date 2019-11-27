@@ -14,9 +14,11 @@ class Camera:
         self.input_img = None
         self.out= None
         self.rec=False
+
         thread = threading.Thread(target=self.keep_processing, args=())
         thread.daemon = True
         thread.start()
+
 
     def getInputImage(self):
         return self.input_img
@@ -32,21 +34,31 @@ class Camera:
     def process_one(self):
         if not self.to_process:
             return
+
         # input is an ascii string. 
         self.input_str = self.to_process.pop(0)
+
         # convert it to a pil image
         self.input_img = base64_to_pil_image(self.input_str)
         ################## where the hard work is done ############
         # output_img is an PIL image
         # self.output_img = self.context.doAlgorithm(self.input_img)
+
         if  self.input_img != None:
             self.context.doAlgorithm(self.input_img)
+
         if self.rec:
             b,g,r = cv2.split(np.asarray(self.input_img))
             self.out.write(cv2.merge([r,g,b]))
             print("Sto Salvando Frame")
+
+
+
     def keep_processing(self):
+        # questa sleep evita che si matchi prima che i descriptor vengono
+        # caricati, va cambiata con un controllo su quando va iniziato a matchare
         while True:
+            # sleep(5) #forse risolto
             self.process_one()
             sleep(0.01)
 
