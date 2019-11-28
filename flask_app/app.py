@@ -144,12 +144,12 @@ def admin():
     
 @app.route('/adminm',methods=['POST'])
 def adminm():
-    imgString=request.form["images[0][url]"][23:]
+    imgString=request.form["images[0][url]"].split(",")#[23:]
     cur = mysql.connection.cursor()
-    print(cur.execute("INSERT INTO images(name,model,type,floor,base64) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["model"] , request.form["type"] , request.form["floor"] , imgString)))
+    print(cur.execute("INSERT INTO images(name,model,type,floor,base64) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["model"] , request.form["type"] , request.form["floor"] , imgString[1])))
     mysql.connection.commit()
     cur.close()
-    findPoints(imgString)
+    findPoints(imgString[1])
     return render_template('init.html')
 
 
