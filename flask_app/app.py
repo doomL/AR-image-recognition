@@ -6,7 +6,7 @@ from flask_mysqldb import MySQL
 import numpy as np
 from camera import Camera
 #from Camera import Camera
-from utils import base64_to_pil_image, pil_image_to_base64
+from utils import base64_to_pil_image, pil_image_to_base64,stringToImage,findPoints
 import cv2
 import AlgorithmChooser
 from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm
@@ -144,13 +144,12 @@ def admin():
     
 @app.route('/adminm',methods=['POST'])
 def adminm():
-    #print(request.form)
-    imgString=request.form["images[0][url]"]
-    stringProva="dwadwafwa"
+    imgString=request.form["images[0][url]"][23:]
     cur = mysql.connection.cursor()
-    print(cur.execute("INSERT INTO images(base64) VALUES('%s')" %(imgString)))
+    print(cur.execute("INSERT INTO images(name,model,type,floor,base64) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["model"] , request.form["type"] , request.form["floor"] , imgString)))
     mysql.connection.commit()
     cur.close()
+    findPoints(imgString)
     return render_template('init.html')
 
 

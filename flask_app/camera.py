@@ -23,7 +23,7 @@ class Camera:
 
     def recording(self,rec):
         self.rec=rec
-        self.out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 20.0, (self.input_img.size))
+        self.out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 30.0, (self.input_img.size))
 
     def stopRec(self,rec):
         self.out.release()
@@ -53,8 +53,8 @@ class Camera:
 
     # QUANDO I FRAME IN DA PROCESSARE ARRIVA A 3 SVUOTIAMO
     def enqueue_input(self, input):
-        if self.to_process.__sizeof__()>=3:
-            self.to_process.clear()
+        #if self.to_process.__sizeof__()>=3:
+        #    self.to_process.clear()
         self.to_process.append(input)
 
     def get_frame(self):

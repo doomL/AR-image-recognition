@@ -14,6 +14,7 @@ var amountOfCameras = 0;
 var currentFacingMode = 'environment';
 
 var snap = 0;
+var recorder;
 
 $(document).ready(function() {
     let namespace = "/test";
@@ -194,7 +195,7 @@ function initCameraStream() {
     }
 
     var constraints = {
-        audio: false,
+        audio: true,
         video: {
             //width: { min: 1024, ideal: window.innerWidth, max: 1920 },
             //height: { min: 776, ideal: window.innerHeight, max: 1080 },
@@ -249,35 +250,43 @@ function takeSnapshot() {
         }
     });
     snap += 1;
-    /*// if you'd like to show the canvas add it to the DOM
-    var canvas = document.createElement('canvas');
 
-    var width = video.videoWidth;
-    var height = video.videoHeight;
+    if (snap % 2 != 0) {
+        navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true
+        }).then(function(stream) {
+            // Display a live preview on the video element of the page
+            setSrcObject(stream, video);
 
-    canvas.width = width;
-    canvas.height = height;
+            // Initialize the recorder
+            recorder = new RecordRTCPromisesHandler(stream, {
+                mimeType: 'video/webm',
+                bitsPerSecond: 128000
+            });
 
-    context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, width, height);
+            // Start recording the video
+            recorder.startRecording().then(function() {
+                console.info('Recording video ...');
+            }).catch(function(error) {
+                console.error('Cannot start video recording: ', error);
+            });
 
-    // polyfil if needed https://github.com/blueimp/JavaScript-Canvas-to-Blob
+            // release stream on stopRecording
+            recorder.stream = stream;
+        });
 
-    // https://developers.google.com/web/fundamentals/primers/promises
-    // https://stackoverflow.com/questions/42458849/access-blob-value-outside-of-canvas-toblob-async-function
-    function getCanvasBlob(canvas) {
-        return new Promise(function(resolve, reject) {
-            canvas.toBlob(function(blob) { resolve(blob) }, 'image/jpeg');
-        })
+    } else if (snap % 2 == 0) {
+        recorder.stopRecording().then(function() {
+            console.info('stopRecording success');
+
+            // Retrieve recorded video as blob and display in the preview element
+            var blob = recorder.getBlob();
+
+            // Stop the device streaming
+            recorder.stream.stop();
+        });
     }
-
-    // some API's (like Azure Custom Vision) need a blob with image data
-    getCanvasBlob(canvas).then(function(blob) {
-
-        // do something with the image blob
-
-    });*/
-
 }
 
 // https://hackernoon.com/how-to-use-javascript-closures-with-confidence-85cd1f841a6b

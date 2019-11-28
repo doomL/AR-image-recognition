@@ -1,5 +1,6 @@
 from PIL import Image
 from io import BytesIO
+import numpy as np
 import base64
 import glob
 import cv2
@@ -22,9 +23,9 @@ def findPoints( img):
 
     # Take in base64 string and return PIL image
 def stringToImage(base64_string):
-    base64_string += "=" * ((4 - len(base64_string) % 4) % 4)  # ugh
+    #base64_string += "=" * ((4 - len(base64_string) % 4) % 4)  # ugh
     imgdata = base64.b64decode(base64_string)
-    return Image.open(io.BytesIO(imgdata))
+    return Image.open(BytesIO(imgdata))
 
 # convert PIL Image to an RGB image( technically a numpy array ) that's compatible with opencv
 def toRGB(image):
