@@ -4,12 +4,20 @@ import numpy as np
 import argparse
 
 from utils import loadImg
+
+
+# minhessian -> Un valore maggiore comporterà un numero inferiore, 
+# ma (teoricamente) di punti di interesse più salienti, 
+# mentre un valore inferiore comporterà punti più numerosi ma meno salienti.
+
+
+
+
 class AlgorithmChooser(ABC):
 
     @abstractmethod
     def doAlgorithm(self,img):
         pass
-
 
 class SiftAlgorithm():
     def __init__(self):
@@ -36,26 +44,28 @@ class SiftAlgorithm():
         # print("frame",self.frame)
         keypointsFrame, self.descriptorsFrame = self.detector.detectAndCompute(self.frame, None)
 
-        for index in range(len(self.loader.imgArray)):
-            # print(self.descriptorsArr[index])
-            # print("descriptor",self.descriptorsFrame)
-            knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArr[index], self.descriptorsFrame, 2)
 
-            for m, n in knn_matchesFrame:
-                if m.distance < self.ratio_tresh * n.distance:
-                    self.good_matches.append(m)
+        if(np.all(self.descriptorsFrame!=None)):
+            for index in range(len(self.loader.imgArray)):
+                # print(self.descriptorsArr[index])
+                # print("descriptor",self.descriptorsFrame)
+                knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArr[index], self.descriptorsFrame, 2)
 
-        # print("GOOD MATCHES", len(self.good_matches))
+                for m, n in knn_matchesFrame:
+                    if m.distance < self.ratio_tresh * n.distance:
+                        self.good_matches.append(m)
 
-        if self.good_matches != None and len(self.good_matches) >= self.siftMinMatches:
-            self.cont += 1
-            print ("CONT",self.cont)
-            if self.cont>=2:
-                print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches),"MATCHES")
+            # print("GOOD MATCHES", len(self.good_matches))
+
+            if self.good_matches != None and len(self.good_matches) >= self.siftMinMatches:
+                self.cont += 1
+                print ("CONT",self.cont)
+                if self.cont>=2:
+                    print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches),"MATCHES")
+                    self.cont = 0
+                    return True
+            else:
                 self.cont = 0
-                return True
-        else:
-            self.cont = 0
         self.good_matches.clear()
         
 
@@ -72,7 +82,7 @@ class SurfAlgorithm(AlgorithmChooser):
         self.surfMinMatches = 45
         self.cont=0
         self.loader = loadImg()
-        minHessian = 500
+        minHessian = 1000
         self.detector = cv2.xfeatures2d_SURF.create()
         # print(len(self.loader.imgArray))
         self.keypointsArr = [None]*len(self.loader.imgArray)
@@ -96,27 +106,33 @@ class SurfAlgorithm(AlgorithmChooser):
         keypointsFrame, self.descriptorsFrame = self.detector.detectAndCompute(
             self.frame, None)
 
-        for index in range(len(self.loader.imgArray)):
-            # print(self.descriptorsArr[index])
-            # print("descriptor",self.descriptorsFrame)
-            knn_matchesFrame = self.matcher.knnMatch(
-                self.descriptorsArr[index], self.descriptorsFrame, 2)
 
-            for m, n in knn_matchesFrame:
-                if m.distance < self.ratio_tresh * n.distance:
-                    self.good_matches.append(m)
+        # print(self.descriptorsArr)
+        # print("stop")
+
+        # print(self.descriptorsFrame) -> None
+        if(np.all(self.descriptorsFrame!=None)):
+            for index in range(len(self.loader.imgArray)):
+                # print(self.descriptorsArr[index])
+                # print("descriptor",self.descriptorsFrame)
+                knn_matchesFrame = self.matcher.knnMatch(
+                    self.descriptorsArr[index], self.descriptorsFrame, 2)
+
+                for m, n in knn_matchesFrame:
+                    if m.distance < self.ratio_tresh * n.distance:
+                        self.good_matches.append(m)
 
         # print("GOOD MATCHES", len(self.good_matches))
 
-        if self.good_matches != None and len(self.good_matches) >= self.surfMinMatches:
-            # print("HO TROVATO", len(self.good_matches))
-            self.cont+=1
-            print("CONT : ",self.cont)
-            if self.cont>=2:
-                print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches), "MATCHES")
+            if self.good_matches != None and len(self.good_matches) >= self.surfMinMatches:
+                # print("HO TROVATO", len(self.good_matches))
+                self.cont+=1
+                print("CONT : ",self.cont)
+                if self.cont>=2:
+                    print("TROVATA BANCONOTA ", index, "CON ",len(self.good_matches), "MATCHES")
+                    self.cont = 0
+                    return True
+            else :
                 self.cont = 0
-                return True
-        else :
-            self.cont = 0
 
         self.good_matches.clear()
