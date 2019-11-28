@@ -59,9 +59,13 @@ def test_connect():
 @app.route('/')
 def index():
     """Video streaming home page."""
-    return render_template('init.html')
+    return render_template('landing.html')
 
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+     
 # @app.route("/chooseAlg", methods=['POST'])
 # def chooseAlg():
 #     print("CambioAlgoritmo")
@@ -96,7 +100,7 @@ def saveVideo():
 #     return render_template("index.html")
 
 
-@app.route("/sift/", methods=['POST'])
+@app.route("/sift/", methods=['GET','POST'])
 def siftAlg():
     print("Sift servlet")
     # if context == None:
@@ -109,7 +113,7 @@ def siftAlg():
     return render_template("Index.html")
 
 
-@app.route("/surf/", methods=['POST'])
+@app.route("/surf/", methods=['GET','POST'])
 def surfAlg():
     print("Surf servlet")
     # if context == None:
@@ -141,6 +145,11 @@ def video_feed():
 @app.route('/admin',methods=['GET', 'POST'])
 def admin():
     return render_template('admin.html')
+    
+
+@app.route('/landing',methods=['GET', 'POST'])
+def landing():
+    return render_template('landing.html')
     
 @app.route('/adminm',methods=['POST'])
 def adminm():
