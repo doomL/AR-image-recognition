@@ -4,12 +4,20 @@ import numpy as np
 import argparse
 
 from utils import loadImg
+
+
+# minhessian -> Un valore maggiore comporterà un numero inferiore, 
+# ma (teoricamente) di punti di interesse più salienti, 
+# mentre un valore inferiore comporterà punti più numerosi ma meno salienti.
+
+
+
+
 class AlgorithmChooser(ABC):
 
     @abstractmethod
     def doAlgorithm(self,img):
         pass
-
 
 class SiftAlgorithm():
     def __init__(self):
