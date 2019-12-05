@@ -81,6 +81,14 @@ button {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+#backButton {
+    width: 64px;
+    height: 64px;
+    background-image: url('../images/undo.svg');
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
 #toggleFullScreenButton[aria-pressed="true"] {
     background-image: url('../images/ic_fullscreen_exit_white_48px.svg');
 }
@@ -120,6 +128,10 @@ button {
         left: calc(80% - 32px);
         top: calc(50% - 32px);
     }
+    #backButton {
+        left: calc(20% - 32px);
+        top: calc(50% - 32px);
+    }
 }
 
 @media screen and (orientation:landscape) {
@@ -147,5 +159,9 @@ button {
     #toggleFullScreenButton {
         left: calc(50% - 32px);
         top: calc(82% - 32px);
+    }
+    #backButton {
+        left: calc(50% - 32px);
+        top: calc(20% - 32px);
     }
 }

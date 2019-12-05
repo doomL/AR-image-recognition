@@ -103,6 +103,7 @@ function initCameraUI() {
     takePhotoButton = document.getElementById('takePhotoButton');
     toggleFullScreenButton = document.getElementById('toggleFullScreenButton');
     switchCameraButton = document.getElementById('switchCameraButton');
+    backButton = document.getElementById('backButton');
 
     // https://developer.mozilla.org/nl/docs/Web/HTML/Element/button
     // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role
@@ -112,6 +113,9 @@ function initCameraUI() {
         takeSnapshot();
     });
 
+    backButton.addEventListener("click", function() {
+        window.location.replace("/");
+    });
     // -- fullscreen part
 
     function fullScreenChange() {
