@@ -9,7 +9,7 @@ from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64,stringToImage,findPoints
 import cv2
 import AlgorithmChooser
-from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm
+from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm,OrbAlgorithm
 from Context import Context
 
 app = Flask(__name__)
@@ -32,8 +32,12 @@ mysql=MySQL(app)
 def switchAlg(number):
     if number == 0:
         return SurfAlgorithm()
+
     elif number == 1:
         return SiftAlgorithm()
+
+    elif number == 2:
+        return OrbAlgorithm()
 
 # 0 = DEFAULT ALGORITHM SURF
 
@@ -116,6 +120,7 @@ def siftAlg():
     algChoose = switchAlg(1)
     context.setStrategy2(algChoose)
     camera = Camera(context)
+
     if context == None:
         print("Context dopo None")
     return render_template("Index.html")
@@ -129,9 +134,24 @@ def surfAlg():
     algChoose = switchAlg(0)
     context.setStrategy2(algChoose)
     camera = Camera(context)
+
     if context == None:
         print("Context dopo A None")
     return render_template('index.html')
+
+
+@app.route("/orb/", methods=['GET','POST'])
+def orbAlg():
+    print("Orb servlet")
+    # if context == None:
+    #     print("Context prima A None")
+    algChoose = switchAlg(2)
+    context.setStrategy2(algChoose)
+    camera = Camera(context)
+
+    if context == None:
+        print("Context dopo None")
+    return render_template("Index.html")
 
 
 def gen():
