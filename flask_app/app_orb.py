@@ -123,3 +123,7 @@ class DisplayData:
       added_image = cv2.addWeighted(frame[150:250,150:250,:],alpha,LoadImg.imgData[0:100,0:100,:],1-alpha,0)
       # Change the region with the result
       frame[150:250,150:250] = added_image
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0',port=5000)
+    
