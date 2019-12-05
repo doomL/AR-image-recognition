@@ -18,12 +18,41 @@ $(document).ready(function() {
         elem.append($ripple);
     };
 
-    $(document).on("click", ".login__submit", function(e) {
+    $(document).on("click", "#login", function(e) {
         if (animating) return;
         animating = true;
         var that = this;
         ripple($(that), e);
-        $(that).addClass("processing");
+        /*$(that).addClass("processing");
+        setTimeout(function() {
+            $(that).addClass("success");
+            setTimeout(function() {
+                $app.show();
+                $app.css("top");
+                $app.addClass("active");
+            }, submitPhase2 - 70);
+            setTimeout(function() {
+                $login.hide();
+                $login.addClass("inactive");
+                animating = false;
+                $(that).removeClass("success processing");
+            }, submitPhase2); 
+    }, submitPhase1);*/
+    });
+
+    $(document).on("click", "#registration", function(e) {
+        var name = $('#name').val()
+        var pass = $('#pass').val()
+        var email = $('#email').val()
+        var azienda = $('#azienda').val()
+        var admin = $('#admin').val()
+
+        if (animating) return;
+        animating = true;
+        var that = this;
+        ripple($(that), e);
+        /*$(that).addClass("processing");
+
         setTimeout(function() {
             $(that).addClass("success");
             setTimeout(function() {
@@ -37,8 +66,20 @@ $(document).ready(function() {
                 animating = false;
                 $(that).removeClass("success processing");
             }, submitPhase2);
-        }, submitPhase1);
+        }, submitPhase1);*/
+        alert(name)
+        $.ajax({
+            url: '/registration',
+            type: 'POST',
+            data: { 'name': name, 'pass': md5(pass), 'email': email, 'azienda': azienda, 'admin': admin },
+            success: function(response) {
+                window.location.replace("/");
+            }
+        })
+
     });
+
+
 
     $(document).on("click", ".app__logout", function(e) {
         if (animating) return;

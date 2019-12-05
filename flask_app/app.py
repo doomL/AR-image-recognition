@@ -61,6 +61,14 @@ def index():
     """Video streaming home page."""
     return render_template('landing.html')
 
+@app.route('/signUp')
+def signUp():
+    return render_template('signUp.html')
+
+@app.route('/registration', methods=['POST'])
+def registration():
+    print(request.form["name"])
+    return "OK"
 
 @app.route('/login')
 def login():

@@ -57,21 +57,39 @@
                 <div class="login__check"></div>
                 <img src="/static/images/logo.PNG" class="logo" alt="Logo">
 
-                <div class="login__form">
+                <div class="login__form" style="top : 35%">
                     <div class="login__row">
                         <svg class="login__icon name svg-icon" viewBox="0 0 20 20">
             <path d="M0,20 a10,8 0 0,1 20,0z M10,0 a4,4 0 0,1 0,8 a4,4 0 0,1 0,-8" />
           </svg>
-                        <input type="text" class="login__input name" placeholder="Username" />
+                        <input type="text" class="login__input name" id="name" placeholder="Username" />
                     </div>
                     <div class="login__row">
                         <svg class="login__icon pass svg-icon" viewBox="0 0 20 20">
             <path d="M0,20 20,20 20,8 0,8z M10,13 10,16z M4,8 a6,8 0 0,1 12,0" />
           </svg>
-                        <input type="password" class="login__input pass" placeholder="Password" />
+                        <input type="password" class="login__input pass" id="pass" placeholder="Password" />
                     </div>
-                    <button type="button" class="login__submit" id="login">Sign in</button>
-                    <p class="login__signup">Don't have an account? &nbsp;<a href="/signUp">Sign up</a></p>
+                    <div class="login__row">
+                        <svg class="login__icon name svg-icon" viewBox="0 0 20 20">
+            <path d="M0,20 a10,8 0 0,1 20,0z M10,0 a4,4 0 0,1 0,8 a4,4 0 0,1 0,-8" />
+          </svg>
+                        <input type="text" class="login__input email" id="email" placeholder="Email" />
+                    </div>
+                    <div class="login__row">
+                        <svg class="login__icon name svg-icon" viewBox="0 0 20 20">
+            <path d="M0,20 a10,8 0 0,1 20,0z M10,0 a4,4 0 0,1 0,8 a4,4 0 0,1 0,-8" />
+          </svg>
+                        <input type="text" class="login__input azienda" id="azienda" placeholder="Codice Azienda" />
+                    </div>
+                    <div class="login__row">
+                        <svg class="login__icon name svg-icon" viewBox="0 0 20 20">
+            <path d="M0,20 a10,8 0 0,1 20,0z M10,0 a4,4 0 0,1 0,8 a4,4 0 0,1 0,-8" />
+          </svg>
+                        <input type="text" class="login__input admin" id="admin" placeholder="AdminCode" />
+                    </div>
+                    <button type="button" class="login__submit" id="registration">Sign Up</button>
+                    <p class="login__signup">Already have an account? &nbsp;<a href="/login">Sign In</a></p>
                 </div>
             </div>
             <div class="app">
