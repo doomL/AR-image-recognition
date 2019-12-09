@@ -71,7 +71,16 @@ def signUp():
 
 @app.route('/registration', methods=['POST'])
 def registration():
-    print(request.form["name"])
+    print(request.form["azienda"])
+    cur = mysql.connection.cursor()
+    
+    #print(cur.execute("SELECT "))
+    
+    print(cur.execute("INSERT INTO user(username,password,email,azienda) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["pass"] , request.form["email"] , request.form["azienda"])))
+    
+    mysql.connection.commit()
+    cur.close()
+
     return "OK"
 
 @app.route('/login')
@@ -152,7 +161,6 @@ def orbAlg():
     if context == None:
         print("Context dopo None")
     return render_template("Index.html")
-
 
 def gen():
     """Video streaming generator function."""

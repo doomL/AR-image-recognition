@@ -71,7 +71,7 @@ $(document).ready(function() {
         $.ajax({
             url: '/registration',
             type: 'POST',
-            data: { 'name': name, 'pass': md5(pass), 'email': email, 'azienda': azienda, 'admin': admin },
+            data: { 'name': name, 'pass': md5(pass), 'email': email, 'azienda': azienda, },
             success: function(response) {
                 window.location.replace("/");
             }
