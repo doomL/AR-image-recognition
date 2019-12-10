@@ -22,14 +22,14 @@ socketio = SocketIO(app)
 
 
 #Database Configuration
-# app.config['MYSQL_HOST'] = 'localhost'
-# app.config['MYSQL_USER'] = 'admin'
-# app.config['MYSQL_DB'] = 'arsistant'
-
-app.config['MYSQL_HOST'] = '192.168.1.145'
+app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'admin'
 app.config['MYSQL_DB'] = 'arsistant'
-app.config['MYSQL_PORT'] = '3306' 
+
+# app.config['MYSQL_HOST'] = '192.168.1.145'
+# app.config['MYSQL_USER'] = 'admin'
+# app.config['MYSQL_DB'] = 'arsistant'
+# app.config['MYSQL_PORT'] = '3306'
 
 mysql=MySQL(app)
 
@@ -118,10 +118,21 @@ def login1():
         cur.close()
         session["azienda"]=azienda
         session["admin"]=isAdmin
+        session["loggato"]=1
         print("CHEéEéEéEéEéEEéEéEéE")
         return "OK"
     else:
         return jsonify(message='Username O Password Errati'),500
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('username',None)
+    session.pop('azienda',None)
+    session.pop('admin',None)
+    session["loggato"]=0
+    # session.clear()
+    return render_template('landing.html')
 
      
 # @app.route("/chooseAlg", methods=['POST'])

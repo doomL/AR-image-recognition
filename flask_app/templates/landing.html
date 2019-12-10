@@ -39,15 +39,22 @@
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/">Home</a>
                     </li>
+                    {%if session['admin'] == 1  %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/admin">Admin</a>
                     </li>
+                    {%endif%}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/surf">Fast Recognition</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
                     </li>
+                    {%if session['loggato'] == 1  %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/logout">Logout</a>
+                    </li>
+                    {%endif%}
                 </ul>
             </div>
         </div>
@@ -59,7 +66,13 @@
             <div class="mx-auto text-center">
                 <h1 class="mx-auto my-0 text-uppercase">Ar-Sistant</h1>
                 <h2 class="text-white-50 mx-auto mt-2 mb-5">Sistema di realtà aumentata con riconoscimento di oggetti per industria 4.0</h2>
+                
+                {%if session['loggato'] == 0  %}
                 <a href="/login" class="btn btn-primary js-scroll-trigger">Accedi</a>
+                {%else%} 
+                <a href="/surf" class="btn btn-primary js-scroll-trigger">Inizia A Riconoscere</a>
+                {%endif%}
+
             </div>
         </div>
     </header>
