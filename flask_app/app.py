@@ -97,17 +97,28 @@ def login():
 
 @app.route('/login1', methods=['POST'])
 def login1():
-    print(request.form["name"])
-    print(request.form["pass"])
+    username=request.form["name"]
+    password=request.form["pass"]
     cur = mysql.connection.cursor()
 
     selectQuery="SELECT * FROM user WHERE username = %s AND password = %s" 
 
-    if cur.execute(selectQuery,(request.form["name"],request.form["pass"])):
+    aziendaQuery="SELECT azienda FROM user WHERE username = %s "
+    
+    adminQuery="SELECT * FROM user WHERE username = %s AND admin = 1"
+    if cur.execute(selectQuery,(username,password)):
+        session["username"]=username
+        cur.execute(aziendaQuery,(username,))
+        aziende=cur.fetchone()
+        azienda=aziende[0]
+
+        isAdmin=cur.execute(adminQuery,(username,))                          
+        print(isAdmin)
         mysql.connection.commit()
         cur.close()
-        session["username"]=request.form["name"]
-        print("ira fissa")
+        session["azienda"]=azienda
+        session["admin"]=isAdmin
+        print("CHEéEéEéEéEéEEéEéEéE")
         return "OK"
     else:
         return jsonify(message='Username O Password Errati'),500
