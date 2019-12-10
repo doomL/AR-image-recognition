@@ -19,6 +19,8 @@ $(document).ready(function() {
     };
 
     $(document).on("click", "#login", function(e) {
+        var name = $('#name').val()
+        var pass = $('#pass').val()
         if (animating) return;
         animating = true;
         var that = this;
@@ -38,6 +40,21 @@ $(document).ready(function() {
                 $(that).removeClass("success processing");
             }, submitPhase2); 
     }, submitPhase1);*/
+        console.log(name)
+        console.log(pass)
+        $.ajax({
+            url: '/login1',
+            type: 'POST',
+            data: { 'name': name, 'pass': md5(pass) },
+            success: function(response) {
+                window.location.replace("/");
+            },
+            error: function(response) {
+                //json = JSON.parse(response);
+                alert("ERRORE");
+                window.location.replace("/login");
+            }
+        });
     });
 
     $(document).on("click", "#registration", function(e) {
@@ -67,15 +84,19 @@ $(document).ready(function() {
                 $(that).removeClass("success processing");
             }, submitPhase2);
         }, submitPhase1);*/
-        alert(name)
         $.ajax({
             url: '/registration',
             type: 'POST',
             data: { 'name': name, 'pass': md5(pass), 'email': email, 'azienda': azienda, },
             success: function(response) {
-                window.location.replace("/");
+                window.location.replace("/login");
+            },
+            error: function(response) {
+                //json = JSON.parse(response);
+                alert("ERRORE");
+                window.location.replace("/signUp");
             }
-        })
+        });
 
     });
 

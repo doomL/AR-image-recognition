@@ -1,6 +1,6 @@
 from sys import stdout
 import logging
-from flask import Flask, render_template, Response, request, redirect,url_for
+from flask import Flask, render_template, Response, request, redirect,url_for, abort,jsonify,session
 from flask_socketio import SocketIO
 from flask_mysqldb import MySQL
 import numpy as np
@@ -71,21 +71,42 @@ def signUp():
 
 @app.route('/registration', methods=['POST'])
 def registration():
-    print(request.form["azienda"])
     cur = mysql.connection.cursor()
     
-    #print(cur.execute("SELECT "))
+    #Trovare azieda con codiceAzienda
+    selectQuery="SELECT * FROM azienda WHERE code = %s" 
     
-    print(cur.execute("INSERT INTO user(username,password,email,azienda) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["pass"] , request.form["email"] , request.form["azienda"])))
+    if not cur.execute(selectQuery,(request.form["azienda"],)):
+        return jsonify(message='AziendaCode_error'),500
+
+
+    print(cur.execute("INSERT INTO user(username,password,email,azienda,admin) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["pass"] , request.form["email"] , request.form["azienda"],0)))
     
     mysql.connection.commit()
     cur.close()
 
     return "OK"
-
 @app.route('/login')
 def login():
     return render_template('login.html')
+
+@app.route('/login1', methods=['POST'])
+def login1():
+    print(request.form["name"])
+    print(request.form["pass"])
+    cur = mysql.connection.cursor()
+
+    selectQuery="SELECT * FROM user WHERE username = %s AND password = %s" 
+
+    if cur.execute(selectQuery,(request.form["name"],request.form["pass"])):
+        mysql.connection.commit()
+        cur.close()
+        session["username"]=request.form["name"]
+        print("ira fissa")
+        return "OK"
+    else:
+        return jsonify(message='Username O Password Errati'),500
+
      
 # @app.route("/chooseAlg", methods=['POST'])
 # def chooseAlg():
@@ -180,6 +201,7 @@ def video_feed():
 
 @app.route('/admin',methods=['GET', 'POST'])
 def admin():
+    print(session['username'])
     return render_template('admin.html')
     
 
