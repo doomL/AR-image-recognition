@@ -22,9 +22,14 @@ socketio = SocketIO(app)
 
 
 #Database Configuration
-app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'admin'
+# app.config['MYSQL_DB'] = 'arsistant'
+
+app.config['MYSQL_HOST'] = '192.168.1.145'
 app.config['MYSQL_USER'] = 'admin'
 app.config['MYSQL_DB'] = 'arsistant'
+app.config['MYSQL_PORT'] = '3306' 
 
 mysql=MySQL(app)
 
