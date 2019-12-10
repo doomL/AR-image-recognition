@@ -20,7 +20,6 @@ app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
 socketio = SocketIO(app)
 
-
 #Database Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'admin'
@@ -32,7 +31,7 @@ app.config['MYSQL_DB'] = 'arsistant'
 # app.config['MYSQL_PORT'] = '3306'
 
 mysql=MySQL(app)
-
+  
 
 def switchAlg(number):
     if number == 0:
@@ -177,6 +176,7 @@ def siftAlg():
     algChoose = switchAlg(1)
     context.setStrategy2(algChoose)
     camera = Camera(context)
+    session["algorithm"]=2
 
     if context == None:
         print("Context dopo None")
@@ -191,6 +191,7 @@ def surfAlg():
     algChoose = switchAlg(0)
     context.setStrategy2(algChoose)
     camera = Camera(context)
+    session["algorithm"]=1
 
     if context == None:
         print("Context dopo A None")
@@ -205,6 +206,7 @@ def orbAlg():
     algChoose = switchAlg(2)
     context.setStrategy2(algChoose)
     camera = Camera(context)
+    session["algorithm"]=3
 
     if context == None:
         print("Context dopo None")

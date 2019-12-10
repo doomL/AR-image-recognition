@@ -9,6 +9,7 @@
     <meta name="keywords" content="HTML,CSS,JavaScript, WebRTC, Camera">
     <meta name="author" content="Kasper Kamperman">
     <title>Mobile First Camera Template</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/dropdown.css">
     <link rel="stylesheet" type="text/css" href="../static/css/webcamTemplate.css">
 </head>
 
@@ -26,6 +27,29 @@
             <button id="switchCameraButton" name="switch Camera" type="button" aria-pressed="false"></button>
             <button id="takePhotoButton" name="take Photo" type="button"></button>
             <button id="toggleFullScreenButton" name="toggle FullScreen" type="button" aria-pressed="false"></button>
+            <div class="button dropdown">
+                <select id="colorselector" onchange="location = this.value;">
+                    {%if session['algorithm']== 1 %} 
+                   <option value="/surf" selected>Surf</option>
+                   {%else%}
+                   <option value="/surf" >Surf</option>
+                   {%endif%}
+                   
+                   {%if session['algorithm']== 2 %}
+                   <option value="/sift" selected>Sift</option>
+                   {%else%}
+                   <option value="/sift" >Sift</option>
+                   {%endif%}
+
+                   {%if session['algorithm']== 3 %}
+                   <option value="/orb" selected>Orb</option>
+                   {%else%}
+                   <option value="/orb" >Orb</option>
+                   {%endif%}
+
+                </select>
+            </div>
+
         </div>
     </div>
     <script src="../static/js/DetectRTC.min.js"></script>

@@ -164,4 +164,8 @@ button {
         left: calc(50% - 32px);
         top: calc(20% - 32px);
     }
+    #dropdown {
+        left: calc(50% - 32px);
+        top: calc(82% - 32px);
+    }
 }
