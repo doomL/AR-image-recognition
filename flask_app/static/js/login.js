@@ -47,11 +47,18 @@ $(document).ready(function() {
             type: 'POST',
             data: { 'name': name, 'pass': md5(pass) },
             success: function(response) {
+                iziToast.success({
+                    title: 'OK',
+                    message: 'Successfully inserted record!',
+                });
                 window.location.replace("/");
             },
             error: function(response) {
                 //json = JSON.parse(response);
-                alert("ERRORE");
+                iziToast.error({
+                    title: 'Error',
+                    message: 'Illegal operation',
+                });
                 window.location.replace("/login");
             }
         });
@@ -89,11 +96,18 @@ $(document).ready(function() {
             type: 'POST',
             data: { 'name': name, 'pass': md5(pass), 'email': email, 'azienda': azienda, },
             success: function(response) {
+                iziToast.success({
+                    title: 'OK',
+                    message: 'Successfully inserted record!',
+                });
                 window.location.replace("/login");
             },
             error: function(response) {
                 //json = JSON.parse(response);
-                alert("ERRORE");
+                iziToast.error({
+                    title: 'Error',
+                    message: 'Illegal operation',
+                });
                 window.location.replace("/signUp");
             }
         });
