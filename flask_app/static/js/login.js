@@ -114,25 +114,18 @@ $(document).ready(function() {
 
     });
 
-
-
-    $(document).on("click", ".app__logout", function(e) {
-        if (animating) return;
-        $(".ripple").remove();
-        animating = true;
-        var that = this;
-        $(that).addClass("clicked");
-        setTimeout(function() {
-            $app.removeClass("active");
-            $login.show();
-            $login.css("top");
-            $login.removeClass("inactive");
-        }, logoutPhase1 - 120);
-        setTimeout(function() {
-            $app.hide();
-            animating = false;
-            $(that).removeClass("clicked");
-        }, logoutPhase1);
+    $("#azienda").keyup(function (event) {
+        if (event.keyCode === 13) {
+            $("#registration").click();
+        }
     });
+
+
+    $("#pass").keyup(function (event) {
+        if (event.keyCode === 13) {
+            $("#login").click();
+        }
+    });
+
 
 });
