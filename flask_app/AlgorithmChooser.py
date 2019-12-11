@@ -77,17 +77,17 @@ class SiftAlgorithm():
 
 class SurfAlgorithm(AlgorithmChooser):
 
-    def __init__(self):
+    def __init__(self,loader):
         print("SURF")
         self.surfMinMatches = 45
         self.cont=0
-        self.loader = loadImg()
+        self.loader = loader
         minHessian = 1000
         self.detector = cv2.xfeatures2d_SURF.create()
         # print(len(self.loader.imgArray))
-        self.keypointsArr = [None]*len(self.loader.imgArray)
-        self.descriptorsArr = [None]*len(self.loader.imgArray)
-        for curr_img in range(len(self.loader.imgArray)):
+        self.keypointsArr = [None]*len(self.loader.id_Images)
+        self.descriptorsArr = [None]*len(self.loader.id_Images)
+        for curr_img in range(len(self.loader.id_Images)):
             self.keypointsArr[curr_img] = self.detector.detectAndCompute(
                 self.loader.imgArray[curr_img], None)[0]
             self.descriptorsArr[curr_img] = self.detector.detectAndCompute(

@@ -3,10 +3,10 @@ import logging
 from flask import Flask, render_template, Response, request, redirect,url_for, abort,jsonify,session
 from flask_socketio import SocketIO
 from flask_mysqldb import MySQL
-import numpy as np
+import numpy as npMySQL
 from camera import Camera
 #from Camera import Camera
-from utils import base64_to_pil_image, pil_image_to_base64,stringToImage,findPoints
+from utils import base64_to_pil_image, pil_image_to_base64,stringToImage,findPoints,loadImg
 import cv2
 import AlgorithmChooser
 from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm,OrbAlgorithm
@@ -33,9 +33,9 @@ app.config['MYSQL_DB'] = 'arsistant'
 mysql=MySQL(app)
   
 
-def switchAlg(number):
+def switchAlg(number,loader):
     if number == 0:
-        return SurfAlgorithm()
+        return SurfAlgorithm(loader)
 
     elif number == 1:
         return SiftAlgorithm()
@@ -47,7 +47,7 @@ def switchAlg(number):
 
 
 currAlgorithm = 0 
-algChoose = switchAlg(None)
+algChoose = switchAlg(None,None)
 context = Context(algChoose)
 camera = Camera(context)
 # surfAlg()
@@ -167,6 +167,20 @@ def saveVideo():
 #         print("Context dopo A None")
 #     return render_template("index.html")
 
+@app.route("/surf/", methods=['GET','POST'])
+def surfAlg():
+    print("Surf servlet")
+    # if context == None:
+    #     print("Context prima A None")
+    loader=loadImg(mysql,session)
+    algChoose = switchAlg(0,loader)
+    context.setStrategy2(algChoose)
+    camera = Camera(context)
+    session["algorithm"]=1
+
+    if context == None:
+        print("Context dopo A None")
+    return render_template('index.html')
 
 @app.route("/sift/", methods=['GET','POST'])
 def siftAlg():
@@ -183,19 +197,6 @@ def siftAlg():
     return render_template("Index.html")
 
 
-@app.route("/surf/", methods=['GET','POST'])
-def surfAlg():
-    print("Surf servlet")
-    # if context == None:
-    #     print("Context prima A None")
-    algChoose = switchAlg(0)
-    context.setStrategy2(algChoose)
-    camera = Camera(context)
-    session["algorithm"]=1
-
-    if context == None:
-        print("Context dopo A None")
-    return render_template('index.html')
 
 
 @app.route("/orb/", methods=['GET','POST'])
@@ -242,7 +243,7 @@ def landing():
 def adminm():
     imgString=request.form["images[0][url]"].split(",")#[23:]
     cur = mysql.connection.cursor()
-    print(cur.execute("INSERT INTO images(name,model,type,floor,base64) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["model"] , request.form["type"] , request.form["floor"] , imgString[1])))
+    print(cur.execute("INSERT INTO images(name,model,type,floor,base64,azienda) VALUES(%s,%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["model"] , request.form["type"] , request.form["floor"] , imgString[1],session["azienda"])))
     mysql.connection.commit()
     cur.close()
     findPoints(imgString[1])

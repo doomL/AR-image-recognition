@@ -31,12 +31,47 @@ def stringToImage(base64_string):
 def toRGB(image):
     return cv2.cvtColor(np.array(image), cv2.COLOR_BGR2RGB)
 
+# class loadImg:
+#     def __init__(self):
+#         self.imgArray = [cv2.imread(file) for file in glob.glob("images/dataset/*.jpg")]
+#         # print(len(self.imgArray), "la lunghezza dell'array")
+#         self.imgData = cv2.imread('images/maintenance.jpg', -1)
+
+#         if self.imgArray is None:
+#             print('Could not open or find the images!')
+
+
+
+
 class loadImg:
-    def __init__(self):
-        self.imgArray = [cv2.imread(file)
-                            for file in glob.glob("images/dataset/*.jpg")]
+    def __init__(self,mysql,session):
+        
+        selectImageQuery="SELECT id FROM images WHERE azienda = %s" 
+        
+        cur = mysql.connection.cursor()
+        
+        cur.execute(selectImageQuery,(session["azienda"],))
+
+        dbImages=cur.fetchall()
+
+        # for row in dbImages:
+        #    print(row)
+
+        print("QUA")
+        # print(dbImages[0][0])
+
+        self.id_Images = {} # array associativo tra id e base64 dal DB
+        for singleImage in dbImages:
+            self.id_Images[singleImage[0]] =  toRGB(stringToImage(singleImage[1]))
+
+        print(self.id_Images)
+            
+
+
+        self.imgArray = [cv2.imread(file) for file in glob.glob("images/dataset/*.jpg")]
+        
         # print(len(self.imgArray), "la lunghezza dell'array")
-        self.imgData = cv2.imread('images/maintenance.jpg', -1)
+        #self.imgData = cv2.imread('images/maintenance.jpg', -1)
 
         if self.imgArray is None:
             print('Could not open or find the images!')
