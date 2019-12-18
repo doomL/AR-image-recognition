@@ -210,6 +210,8 @@
                     data: { 'name': stock.name, 'model': stock.model, 'type': stock.type, 'floor': stock.floor, 'images': stock.images },
                     success: function(response) {
                         notification.append('<div class="success btn"><p><strong>Success:</strong> ' + ID + ' is pushed.</p><span><i class=\"fa fa-times\" aria-hidden=\"true\"></i></span></div>')
+                        location.reload();
+
                     }
                 })
                 queue.push(stock)
@@ -234,4 +236,43 @@
             var message = $('#msg').val('')
         }
     })
+
 })(jQuery)
+
+function manage(id, name, model, type, floor) {
+    console.log(id)
+    Swal.fire({
+        title: name,
+        text: "Modello: " + model + " | Tipo: " + type + " | Piano: " + floor,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Cancella Il macchinario',
+        cancelButtonText: 'Annulla',
+    }).then((result) => {
+        if (result.value) {
+
+            $.ajax({
+                url: '/deleteImg',
+                type: 'POST',
+                data: { 'id': id },
+                success: function(response) {
+                    Swal.fire(
+                        'Cancellato!',
+                        'Il Macchinario è stato eliminato.',
+                        'success',
+                    ).then((result) => {
+                        if (result.value) {
+                            location.reload();
+
+                        }
+                    })
+
+                }
+            })
+
+        }
+
+    })
+}

@@ -21,7 +21,7 @@
     <link href="../static/css/grayscale.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="../static/css/admin.css">
-
+    <link rel="stylesheet" href="../static/css/image-list-small.css">
 </head>
 
 <body>
@@ -70,7 +70,7 @@
                 <li class="active">
                     add New Machine
                 </li>
-                <li class="not">
+                <li class="">
                     Manage Machines
                 </li>
             </ul>
@@ -78,7 +78,7 @@
 
         <div class="sections">
 
-            <section class="active">
+            <section id="addMachine" class="active">
                 <input type="text" placeholder="Name" id="name" />
                 <input type="text" placeholder="Model" id="model" />
                 <input type="text" placeholder="Type" id="type" />
@@ -94,69 +94,55 @@
                     <div class="option"></div>
                 </div>
 
-
                 <div class="images">
                     <div class="pic">
                         add
                     </div>
                 </div>
+
+                <footer style="padding: 0;">
+                    <ul>
+                        <li><span id="reset">reset</span></li>
+                        <li><span id="send">send</span></li>
+                    </ul>
+                </footer>
 
 
             </section>
 
-        </div>
-        <footer>
-            <ul>
-                <li><span id="reset">reset</span></li>
-                <li><span id="send">send</span></li>
-            </ul>
-        </footer>
-
-        <div class="sections" hidden="true">
-
-            <section class="active">
-                <input type="text" placeholder="Name" id="name" />
-                <input type="text" placeholder="Model" id="model" />
-                <input type="text" placeholder="Type" id="type" />
-                <select id="floor">
-                        <option value="T">T</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-
-                <div class="select-option">
-                    <div class="head">Floor</div>
-                    <div class="option"></div>
-                </div>
-
-
-                <div class="images">
-                    <div class="pic">
-                        add
-                    </div>
-                </div>
-
-
+            <section id="machineManagement" class="">
+                <ul class="image-list-small">
+                    {%for image in images%}
+                    <li>
+                        <a id="{{image[0]}}" href=" # " onclick="manage({{image[0]}},' {{image[1]}} ','{{image[2]}}','{{image[3]}}','{{image[4]}}')" style="background-image: url( 'data:image/png;base64, {{image[5]}}'); "></a>
+                        <div class="details ">
+                            <h3><a href="# ">{{image[1]}}</a></h3>
+                            <p class="image-author ">{{image[2]}}</p>
+                        </div>
+                    </li>
+                    {%endfor%}
+                </ul>
             </section>
 
         </div>
 
     </div>
-    <div class="notification"></div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <script src="../static/js/md5.js"></script>
-    <script src="../static/js/admin.js"></script>
+    <div class="notification "></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js "></script>
+    <script src="../static/js/md5.js "></script>
+    <script src="../static/js/admin.js "></script>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="../static/vendor/jquery/jquery.min.js"></script>
-    <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/vendor/jquery/jquery.min.js "></script>
+    <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js "></script>
 
     <!-- Plugin JavaScript -->
-    <script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../static/vendor/jquery-easing/jquery.easing.min.js "></script>
 
     <!-- Custom scripts for this template -->
-    <script src="../static/js/grayscale.min.js"></script>
+    <script src="../static/js/grayscale.min.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9 "></script>
+
 
 </body>
 

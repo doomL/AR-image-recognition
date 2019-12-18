@@ -19,7 +19,7 @@ def findPoints( img):
     detector = cv2.xfeatures2d_SURF.create(hessianThreshold=200)
     keypointsImg, descriptorsImg = detector.detectAndCompute(
         toRGB(stringToImage(img)), None)
-    print(keypointsImg)
+    #print(keypointsImg)
 
     # Take in base64 string and return PIL image
 def stringToImage(base64_string):
@@ -46,7 +46,7 @@ def toRGB(image):
 class loadImg:
     def __init__(self,mysql,session):
         
-        selectImageQuery="SELECT id FROM images WHERE azienda = %s" 
+        selectImageQuery="SELECT id,base64 FROM images WHERE azienda = %s" 
         
         cur = mysql.connection.cursor()
         
@@ -57,16 +57,16 @@ class loadImg:
         # for row in dbImages:
         #    print(row)
 
-        print("QUA")
+        #print("QUA")
         # print(dbImages[0][0])
 
         self.id_Images = {} # array associativo tra id e base64 dal DB
         for singleImage in dbImages:
             self.id_Images[singleImage[0]] =  toRGB(stringToImage(singleImage[1]))
 
-        print(self.id_Images)
+        #print(self.id_Images)
             
-
+        print(self.id_Images)
 
         self.imgArray = [cv2.imread(file) for file in glob.glob("images/dataset/*.jpg")]
         

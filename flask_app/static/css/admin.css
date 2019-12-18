@@ -1,17 +1,19 @@
 body {
-    background-color: darkseagreen;
+    background-color: lightgray;
     background-image: url('../images/bg-masthead.jpg');
+    background-size: cover;
     display: flex;
     flex-direction: column;
     padding: 20px;
     position: relative;
+    padding-top: 150px;
 }
 
 .wrapper {
     background-color: #fff;
     padding: 25px;
     border-radius: 5px;
-    width: 360px;
+    width: 470px;
     max-width: 100%;
     margin: 50px auto;
     align-self: center;

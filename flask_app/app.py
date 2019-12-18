@@ -38,10 +38,10 @@ def switchAlg(number,loader):
         return SurfAlgorithm(loader)
 
     elif number == 1:
-        return SiftAlgorithm()
+        return SiftAlgorithm(loader)
 
     elif number == 2:
-        return OrbAlgorithm()
+        return OrbAlgorithm(loader)
 
 # 0 = DEFAULT ALGORITHM SURF
 
@@ -187,7 +187,8 @@ def siftAlg():
     print("Sift servlet")
     # if context == None:
     #     print("Context prima A None")
-    algChoose = switchAlg(1)
+    loader=loadImg(mysql,session)
+    algChoose = switchAlg(1,loader)
     context.setStrategy2(algChoose)
     camera = Camera(context)
     session["algorithm"]=2
@@ -204,7 +205,8 @@ def orbAlg():
     print("Orb servlet")
     # if context == None:
     #     print("Context prima A None")
-    algChoose = switchAlg(2)
+    loader=loadImg(mysql,session)
+    algChoose = switchAlg(2,loader)
     context.setStrategy2(algChoose)
     camera = Camera(context)
     session["algorithm"]=3
@@ -231,8 +233,31 @@ def video_feed():
 
 @app.route('/admin',methods=['GET', 'POST'])
 def admin():
-    print(session['username'])
-    return render_template('admin.html')
+    selectImageQuery="SELECT * FROM images WHERE azienda = %s" 
+        
+    cur = mysql.connection.cursor()
+        
+    cur.execute(selectImageQuery,(session["azienda"],))
+
+    dbImages=cur.fetchall()
+
+    return render_template('admin.html', images=dbImages)
+    
+
+@app.route('/deleteImg',methods=['POST'])
+def deleteImg():
+    cur = mysql.connection.cursor()
+    print(request.form['id'])
+    deleteQuery="DELETE FROM images WHERE id = %s "
+    cur.execute(deleteQuery,(request.form["id"],))
+
+    mysql.connection.commit()
+
+    cur.close()
+
+    return "OK deleteImg"
+
+    
     
 
 @app.route('/landing',methods=['GET', 'POST'])
