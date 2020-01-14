@@ -2,10 +2,8 @@ from abc import ABC, abstractmethod
 import cv2
 import numpy as np
 import argparse
-
-from utils import loadImg
-
-
+from utils import loadImg,toRGB
+from collections import deque
 # minhessian -> Un valore maggiore comporterà un numero inferiore, 
 # ma (teoricamente) di punti di interesse più salienti, 
 # mentre un valore inferiore comporterà punti più numerosi ma meno salienti.
@@ -38,9 +36,9 @@ class SiftAlgorithm():
         self.matcher = cv2.DescriptorMatcher_create(cv2.DescriptorMatcher_FLANNBASED)
         self.ratio_tresh = 0.6
 
-        self.good_matches = []
+        self.good_matches = deque()
 
-    def doAlgorithm(self, img) -> bool:
+    def doAlgorithm(self, img):
         print("SIIIIIIIIIIIIIFT")
         self.frame = np.asarray(img)
         # print("frame",self.frame)
@@ -61,7 +59,8 @@ class SiftAlgorithm():
 
                 if self.good_matches != None and len(self.good_matches) >= self.siftMinMatches:
                         print("TROVATO MACCHINARIO: ", curr_Id, "CON ",len(self.good_matches),"MATCHES")
-                
+                        self.good_matches.clear()
+                        return curr_Id
                 self.good_matches.clear()
         
 
@@ -104,13 +103,13 @@ class SurfAlgorithm(AlgorithmChooser):
         self.matcher = cv2.DescriptorMatcher_create(cv2.DescriptorMatcher_FLANNBASED)
         self.ratio_tresh = 0.6
 
-        self.good_matches = []
+        self.good_matches =deque()
 
-
-    def doAlgorithm(self, img) -> bool:
+    def doAlgorithm(self, img):
         print("SUUUUUURF")
-        self.frame = np.asarray(img)
+        self.frame = toRGB(np.asarray(img))
         # print("frame",self.frame)
+        
         keypointsFrame, self.descriptorsFrame = self.detector.detectAndCompute(
             self.frame, None)
 
@@ -122,8 +121,9 @@ class SurfAlgorithm(AlgorithmChooser):
         if(np.all(self.descriptorsFrame!=None)):
 
             for curr_Id in self.loader.id_Images:
+                cv2.imwrite("wsdadaw.png",self.loader.id_Images[curr_Id])
                 # print(self.descriptorsArr[index])
-                # print("descriptor",self.descriptorsFrame)
+                #print("descriptor",s   elf.descriptorsFrame)
                 knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArrDict[curr_Id], self.descriptorsFrame,2)
 
                 for m, n in knn_matchesFrame:
@@ -131,18 +131,10 @@ class SurfAlgorithm(AlgorithmChooser):
                         self.good_matches.append(m)
 
                 #print("GOOD MATCHES", len(self.good_matches))
-
                 if self.good_matches != None and len(self.good_matches) >= self.surfMinMatches:
-                    # print("HO TROVATO", len(self.good_matches))
-                    #self.cont+=1
-                    #print("CONT : ",self.cont)
-                    #if self.cont>=2:
                     print("TROVATO MACCHINARIO: ", curr_Id, "CON ",len(self.good_matches), "MATCHES")
-                    
-                    #    self.cont = 0
-                #else :
-                #    self.cont = 0
-
+                    self.good_matches.clear()
+                    return curr_Id
                 self.good_matches.clear()
 
 
@@ -173,12 +165,12 @@ class OrbAlgorithm():
         self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
         self.ratio_tresh = 0.6
 
-        self.good_matches = []
+        self.good_matches = deque()
 
 
 # OOOOOOOOOOOOOOOOOORRRRRRRRRRRRRRRRRRRBBBBBBBBBBBBBBBBBBBBBBBB
 
-    def doAlgorithm(self, img) -> bool:
+    def doAlgorithm(self, img):
         print("ORB")
         self.frame = np.asarray(img)
         # print("frame",self.frame)
@@ -196,7 +188,9 @@ class OrbAlgorithm():
 
                 if self.good_matches != None and len(self.good_matches) >= self.orbMinMatches:
                         print("TROVATO MACCHINARIO: ", curr_Id, "CON ",len(self.good_matches),"MATCHES")
-                
+                        self.good_matches.clear()
+                        return curr_Id
+
                 self.good_matches.clear()
         
 

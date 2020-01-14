@@ -95,12 +95,11 @@ class VideoCamera(object):
 
     #-- Draw matches
         img_matches = np.empty((max(self.loader.imgArray[index].shape[0], frame.shape[0]),self.loader.imgArray[index].shape[1]+frame.shape[1], 3), dtype=np.uint8)
-        #   cv2.drawMatches(self.loader.imgArray[index], self.keypointsArr[index], frame, keypointsFrame,
-                        #   self.good_matches, img_matches, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #   cv2.imshow('View', frame)
-    # cv2.destroyAllWindows()
-    #cv2.imshow('View',img_matches)
+        cv2.drawMatches(self.loader.imgArray[index], self.keypointsArr[index], frame, keypointsFrame,self.good_matches, img_matches, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        cv2.imshow('View', frame)
+        cv2.destroyAllWindows()
+        cv2.imshow('View',img_matches)
 
         print(len(self.good_matches))
         if self.good_matches != None and len(self.good_matches) >= 30:
@@ -156,3 +155,7 @@ class DisplayData:
         added_image = cv2.addWeighted(frame[150:250, 150:250, :], alpha, LoadImg.imgData[0:100, 0:100, :], 1-alpha, 0)
         # Change the region with the result
         frame[150:250, 150:250] = added_image
+
+if __name__ == '__main__':
+    Flask.run(app,host='0.0.0.0',port=5000)
+    

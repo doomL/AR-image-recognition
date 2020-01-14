@@ -57,12 +57,28 @@ def test_message(input):
     input = input.split(",")[1]
     camera.enqueue_input(input)
     #camera.enqueue_input(base64_to_pil_image(input))
-
+    if camera.get_result()!=None:
+        getObject(camera.get_result())
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
     app.logger.info("client connected")
 
+@app.route('/getObject',methods=['POST','GET']) 
+def getObject(curr_id):
+    cur = mysql.connection.cursor()
+
+    selectQuery="SELECT * FROM images WHERE id = %s "
+    
+    cur.execute(selectQuery,(curr_id,))
+    
+    recognizedObject=cur.fetchone()
+
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify(name=recognizedObject[1],model=recognizedObject[2],type=recognizedObject[3],floor=recognizedObject[4]),500
+    
 
 @app.route('/')
 def index():
@@ -196,8 +212,6 @@ def siftAlg():
     if context == None:
         print("Context dopo None")
     return render_template("Index.html")
-
-
 
 
 @app.route("/orb/", methods=['GET','POST'])

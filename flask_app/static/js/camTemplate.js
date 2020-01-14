@@ -32,7 +32,7 @@ $(document).ready(function() {
             return;
         }
 
-        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 300, 150);
+        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 1920, 1080);
 
         let dataURL = canvas.toDataURL('image/jpeg');
         socket.emit('input image', dataURL);

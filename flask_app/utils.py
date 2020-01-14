@@ -66,12 +66,12 @@ class loadImg:
 
         #print(self.id_Images)
             
-        print(self.id_Images)
+        #print(self.id_Images)
 
-        self.imgArray = [cv2.imread(file) for file in glob.glob("images/dataset/*.jpg")]
+        #self.imgArray = [cv2.imread(file) for file in glob.glob("images/dataset/*.jpg")]
         
         # print(len(self.imgArray), "la lunghezza dell'array")
         #self.imgData = cv2.imread('images/maintenance.jpg', -1)
 
-        if self.imgArray is None:
-            print('Could not open or find the images!')
+        #if self.imgArray is None:
+        #    print('Could not open or find the images!')

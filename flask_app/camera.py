@@ -3,22 +3,25 @@ import binascii
 import cv2
 from time import sleep
 from utils import base64_to_pil_image, pil_image_to_base64
+from collections import deque
 import numpy as np
 #from VideoSave import VideoSave
 
 class Camera:
+    
     def __init__(self, context):
-        self.to_process = []
-        self.to_output = []
+        self.to_process2 = []
+        self.to_output2 = []
+        self.to_process = deque()
+        self.to_output = deque()
         self.context = context
         self.input_img = None
         self.out= None
         self.rec=False
-
+        self.result=None
         thread = threading.Thread(target=self.keep_processing, args=())
         thread.daemon = True
         thread.start()
-
 
     def getInputImage(self):
         return self.input_img
@@ -36,7 +39,7 @@ class Camera:
             return
 
         # input is an ascii string. 
-        self.input_str = self.to_process.pop(0)
+        self.input_str = self.to_process.pop() # c'era uno 0 dentro pop
 
         # convert it to a pil image
         self.input_img = base64_to_pil_image(self.input_str)
@@ -45,7 +48,7 @@ class Camera:
         # self.output_img = self.context.doAlgorithm(self.input_img)
 
         if  self.input_img != None:
-            self.context.doAlgorithm(self.input_img)
+            self.result=self.context.doAlgorithm(self.input_img)
 
         if self.rec:
             b,g,r = cv2.split(np.asarray(self.input_img))
@@ -67,9 +70,12 @@ class Camera:
     def enqueue_input(self, input):
         #if self.to_process.__sizeof__()>=3:
         #    self.to_process.clear()
-        self.to_process.append(input)
+        self.to_process.appendleft(input)
 
     def get_frame(self):
         while not self.to_output:
             sleep(0.05)
-        return self.to_output.pop(0)
+        return self.to_output.pop()  # c'era uno 0 dentro pop
+
+    def get_result(self):
+        return self.result

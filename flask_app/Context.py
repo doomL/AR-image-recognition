@@ -16,11 +16,15 @@ import AlgorithmChooser
 class Context:
     def __init__(self, strategyChoose : AlgorithmChooser):
         print("Costruttore di Context")
+        self.result=None
         self.strategy = strategyChoose
 
 
     def doAlgorithm(self, img):
-        self.strategy.doAlgorithm(img)
+        try:
+            self.result = self.strategy.doAlgorithm(img)
+        finally:
+            return self.result
 
     #@AlgorithmChooser.setter
     def setStrategy(self, strategyChoose: AlgorithmChooser) :
