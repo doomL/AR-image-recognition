@@ -19,3 +19,6 @@ University Thesis for 4.0 Industry with Augmented Reality web based.
 * *py app.py*
 
 * app displayed on localhost:5000
+
+* Admin : admin1
+* passAdmin : ciao
