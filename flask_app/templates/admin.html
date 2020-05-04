@@ -44,9 +44,9 @@
                         <a class="nav-link js-scroll-trigger" href="/admin">Admin</a>
                     </li>
                     {%endif%}
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/surf">Fast Recognition</a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
                     </li>
@@ -67,11 +67,17 @@
 
         <div class="ways">
             <ul>
+                
                 <li class="active">
                     add New Machine
                 </li>
+
                 <li class="">
                     Manage Machines
+                </li>
+
+                <li class="">
+                    Add User
                 </li>
             </ul>
         </div>
@@ -103,7 +109,7 @@
                 <footer style="padding: 0;">
                     <ul>
                         <li><span id="reset">reset</span></li>
-                        <li><span id="send">send</span></li>
+                        <li><span id="send">add</span></li>
                     </ul>
                 </footer>
 
@@ -119,10 +125,29 @@
                             <h3><a href="# ">{{image[1]}}</a></h3>
                             <p class="image-author ">{{image[2]}}</p>
                         </div>
-                    </li>
+                    </li>   
                     {%endfor%}
                 </ul>
             </section>
+
+            
+            <section id="addUser" class="">
+                <input type="text" placeholder="Username" id="username" />
+                <input type="text" placeholder="Name" id="nameUser" />
+                <input type="text" placeholder="Surname" id="surname" />
+                <input type="text" placeholder="Email" id="email" />
+                <input type="password" placeholder="Password" id="password" />
+
+
+                <footer style="padding: 0;">
+                    <ul>
+                        <li><span id="userAdd">Add</span></li>
+                    </ul>
+                </footer>
+
+            </section>
+
+            
 
         </div>
 

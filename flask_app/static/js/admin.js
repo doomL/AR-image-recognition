@@ -8,6 +8,7 @@
         removeClass()
         uploadImage()
         submit()
+        addUser()
         resetButton()
         removeNotification()
         autoRemoveNotification()
@@ -50,6 +51,8 @@
             })
         }
 
+        
+        
         function generateOption() {
             var select = $('select option')
             var selectAdd = $('.select-option .option')
@@ -133,6 +136,35 @@
 
             })
         }
+
+        function addUser() {
+            var userButton = $('#userAdd')
+
+            userButton.on('click', function() {
+                var username = $('#username')
+                var password = $('#password')
+                var email = $('#email')
+                
+                
+                
+                $.ajax({
+                    url: '/addUser',
+                    type: 'POST',
+                    data: { 'username': username.val(),'password':md5(password.val()),'email':email.val()},
+                    success: function(response) {
+                        location.reload();
+
+                    }
+                })
+
+            })
+        }
+        
+
+
+
+
+
 
         function removeNotification() {
             var close = $('.notification')

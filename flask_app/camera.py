@@ -43,6 +43,10 @@ class Camera:
 
         # convert it to a pil image
         self.input_img = base64_to_pil_image(self.input_str)
+
+        # cv2.imwrite("inputImg.png",np.asarray(self.input_img)) va ma e' 0kb
+        # cv2.imwrite("inputStr.png",np.asarray(self.input_str)) non va
+
         ################## where the hard work is done ############
         # output_img is an PIL image
         # self.output_img = self.context.doAlgorithm(self.input_img)
@@ -50,6 +54,7 @@ class Camera:
         if  self.input_img != None:
             self.result=self.context.doAlgorithm(self.input_img)
 
+        # salvataggio video
         if self.rec:
             b,g,r = cv2.split(np.asarray(self.input_img))
             self.out.write(cv2.merge([r,g,b]))
@@ -68,13 +73,19 @@ class Camera:
 
     # QUANDO I FRAME IN DA PROCESSARE ARRIVA A 3 SVUOTIAMO
     def enqueue_input(self, input):
-        #if self.to_process.__sizeof__()>=3:
-        #    self.to_process.clear()
+        # print("LA CODA E' :",len(self.to_process))
+        if self.to_process.__sizeof__()>=2:
+           self.to_process.clear()
         self.to_process.appendleft(input)
 
+    #3
     def get_frame(self):
         while not self.to_output:
+            # print("Buonanotte")
             sleep(0.05)
+
+        print("qua")
+        # cv2.imwrite("frame3.png",self.to_output.pop())
         return self.to_output.pop()  # c'era uno 0 dentro pop
 
     def get_result(self):

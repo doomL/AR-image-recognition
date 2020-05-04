@@ -199,7 +199,7 @@ function initCameraStream() {
     }
 
     var constraints = {
-        audio: true,
+        audio: false,
         video: {
             //width: { min: 1024, ideal: window.innerWidth, max: 1920 },
             //height: { min: 776, ideal: window.innerHeight, max: 1080 },
@@ -257,7 +257,7 @@ function takeSnapshot() {
 
     if (snap % 2 != 0) {
         navigator.mediaDevices.getUserMedia({
-            audio: true,
+            audio: false,
             video: true
         }).then(function(stream) {
             // Display a live preview on the video element of the page

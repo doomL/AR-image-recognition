@@ -9,7 +9,7 @@ from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64,stringToImage,findPoints,loadImg
 import cv2
 import AlgorithmChooser
-from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm,OrbAlgorithm
+from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm,OrbAlgorithm,AkazeAlgorithm,OrbHarrisAlgorithm
 from Context import Context
 
 app = Flask(__name__)
@@ -42,6 +42,14 @@ def switchAlg(number,loader):
 
     elif number == 2:
         return OrbAlgorithm(loader)
+
+    elif number ==3:
+        return AkazeAlgorithm(loader)
+
+    elif number ==4:
+        return OrbHarrisAlgorithm(loader)
+
+        
 
 # 0 = DEFAULT ALGORITHM SURF
 
@@ -106,6 +114,8 @@ def registration():
     cur.close()
 
     return "OK"
+
+
 @app.route('/login')
 def login():
     return render_template('login.html')
@@ -134,7 +144,7 @@ def login1():
         session["azienda"]=azienda
         session["admin"]=isAdmin
         session["loggato"]=1
-        print("CHEéEéEéEéEéEEéEéEéE")
+        
         return "OK"
     else:
         return jsonify(message='Username O Password Errati'),500
@@ -171,17 +181,6 @@ def saveVideo():
         camera.stopRec(False)    
     return "OK"
 
-# @app.route("/surf/", methods=['POST'])
-# def surfAlg():
-#     print("Surf servlet")
-#     # if context == None:
-#     #     print("Context prima A None")
-#     algChoose = switchAlg(0)
-#     context=Context.setStrategy2(algChoose)
-#     camera = Camera(context)
-#     if context == None:
-#         print("Context dopo A None")
-#     return render_template("index.html")
 
 @app.route("/surf/", methods=['GET','POST'])
 def surfAlg():
@@ -189,10 +188,27 @@ def surfAlg():
     # if context == None:
     #     print("Context prima A None")
     loader=loadImg(mysql,session)
-    algChoose = switchAlg(0,loader)
+    algChoose = switchAlg(0,loader) #1
     context.setStrategy2(algChoose)
     camera = Camera(context)
-    session["algorithm"]=1
+    session["algorithm"]=1 #
+
+    if context == None:
+        print("Context dopo A None")
+    return render_template('index.html')
+
+
+
+@app.route("/akaze/", methods=['GET','POST'])
+def akazeAlg():
+    print("Akaze servlet")
+    # if context == None:
+    #     print("Context prima A None")
+    loader=loadImg(mysql,session)
+    algChoose = switchAlg(3,loader)
+    context.setStrategy2(algChoose)
+    camera = Camera(context)
+    session["algorithm"]=4
 
     if context == None:
         print("Context dopo A None")
@@ -229,19 +245,41 @@ def orbAlg():
         print("Context dopo None")
     return render_template("Index.html")
 
+
+@app.route("/orbHarris/", methods=['GET','POST'])
+def orbHarrisAlg():
+    print("OrbHarris servlet")
+    # if context == None:
+    #     print("Context prima A None")
+    loader=loadImg(mysql,session)
+    algChoose = switchAlg(4,loader) 
+    context.setStrategy2(algChoose)
+    camera = Camera(context)
+    session["algorithm"]=5 
+
+    if context == None:
+        print("Context dopo A None")
+    return render_template('index.html')
+
+2
 def gen():
     """Video streaming generator function."""
 
     app.logger.info("starting to generate frames!")
+    cv2.imwrite("frame3.png",camera.get_frame())
     while True:
+        # print("++++++++++++++++")
         frame = camera.get_frame() #pil_image_to_base64(camera.get_frame())
+        print("*************")
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+
+1
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    print ("prunt")
+    print ("VIDEO FEED")
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -256,6 +294,25 @@ def admin():
     dbImages=cur.fetchall()
 
     return render_template('admin.html', images=dbImages)
+
+
+@app.route('/addUser',methods=['GET', 'POST'])
+def addUser():
+    userMail="SELECT * FROM user WHERE email = %s" 
+    username="SELECT * FROM user WHERE username = %s" 
+
+    
+    cur = mysql.connection.cursor()
+    
+    # posso aggiungere solo se non ne esiste uno con la stessa mail o id
+    if cur.execute(userMail,(request.form["email"],)) == 0 and cur.execute(username,(request.form["username"],)) == 0:
+        print(cur.execute("INSERT INTO user(username,password,email,azienda,admin) VALUES(%s,%s,%s,%s,%s)" ,(request.form["username"] , request.form["password"] , request.form["email"] , session["azienda"] , 0 )))
+    
+    mysql.connection.commit()
+    cur.close()
+    
+    return render_template('landing.html')
+    
     
 
 @app.route('/deleteImg',methods=['POST'])
@@ -285,7 +342,7 @@ def adminm():
     print(cur.execute("INSERT INTO images(name,model,type,floor,base64,azienda) VALUES(%s,%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["model"] , request.form["type"] , request.form["floor"] , imgString[1],session["azienda"])))
     mysql.connection.commit()
     cur.close()
-    findPoints(imgString[1])
+    # findPoints(imgString[1])
     return render_template('init.html')
 
 

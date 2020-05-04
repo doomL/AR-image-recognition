@@ -17,7 +17,7 @@ def main():
     print(cur.execute("INSERT INTO user(Username,Password) VALUES('Giovanni','Grasso');"))
     mysql.connection.commit()
     cur.close()
-    print("ho eseguito tua mamma")
+    
 
 
 if __name__ == '__main__':

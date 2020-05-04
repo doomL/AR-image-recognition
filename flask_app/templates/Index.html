@@ -47,6 +47,18 @@
                    <option value="/orb" >Orb</option>
                    {%endif%}
 
+                   {%if session['algorithm']== 4 %}
+                   <option value="/akaze" selected>Akaze</option>
+                   {%else%}
+                   <option value="/akaze" >Akaze</option>
+                   {%endif%}
+
+                   {%if session['algorithm']== 5 %}
+                   <option value="/orbHarris" selected>OrbHarris</option>
+                   {%else%}
+                   <option value="/orbHarris" >OrbHarris</option>
+                   {%endif%}
+
                 </select>
             </div>
 
