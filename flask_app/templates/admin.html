@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
 
+    <link rel="shortcut icon" href="../static/images/favicon.ico" />
+
     <!-- Bootstrap core CSS -->
     <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -79,6 +81,10 @@
                 <li class="">
                     Add User
                 </li>
+
+                <li class="">
+                    Delete User
+                </li>
             </ul>
         </div>
 
@@ -120,10 +126,10 @@
                 <ul class="image-list-small">
                     {%for image in images%}
                     <li>
-                        <a id="{{image[0]}}" href=" # " onclick="manage({{image[0]}},' {{image[1]}} ','{{image[2]}}','{{image[3]}}','{{image[4]}}')" style="background-image: url( 'data:image/png;base64, {{image[5]}}'); "></a>
+                        <a id="{{image.id}}" href=" # " onclick="manage({{image.id}},' {{image.name}} ','{{image.model}}','{{image.type}}','{{image.floor}}')" style="background-image: url( 'data:image/png;base64, {{image.base64}}'); "></a>
                         <div class="details ">
-                            <h3><a href="# ">{{image[1]}}</a></h3>
-                            <p class="image-author ">{{image[2]}}</p>
+                            <h3><a href="# ">{{image.name}}</a></h3>
+                            <p class="image-author ">{{image.type}}</p>
                         </div>
                     </li>   
                     {%endfor%}
@@ -147,7 +153,19 @@
 
             </section>
 
-            
+
+            <section id="deleteUser" class="">
+                <input type="text" placeholder="username" id="usernameDaEliminare" />
+                <input type="text" placeholder="email" id="emailDaEliminare" />
+
+                <footer style="padding: 0;">
+                    <ul>
+                        <li><span id="userDelete">Delete</span></li>
+                    </ul>
+                </footer>
+
+            </section>
+
 
         </div>
 

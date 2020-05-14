@@ -9,6 +9,8 @@
     <!-- Bootstrap core CSS -->
     <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+    <link rel="shortcut icon" href="../static/images/favicon.ico" />
+
     <!-- Custom fonts for this template -->
     <link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
@@ -42,12 +44,12 @@
                         <a class="nav-link js-scroll-trigger" href="/admin">Admin</a>
                     </li>
                     {%endif%}
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/surf">Fast Recognition</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
-                    </li>
+                    </li> -->
                     {%if session['loggato'] == 1  %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/logout">Logout</a>

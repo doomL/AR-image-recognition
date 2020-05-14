@@ -27,19 +27,49 @@ $(document).ready(function() {
 
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
-    function sendSnapshot() {
-        if (!localMediaStream) {
-            return;
-        }
 
-        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 1920, 1080);
 
-        let dataURL = canvas.toDataURL('image/jpeg');
-        socket.emit('input image', dataURL);
-    }
+    // socket.on('connect', function() {
+    //     console.log('Connected!');
 
-    socket.on('connect', function() {
-        console.log('Connected!');
+    // });
+    socket.on('connection', (socketServer) => {
+        console.log("connected")
+    });
+
+
+    socket.on('responseImageInfo', function(imageRecognized) {
+        var json = JSON.parse(imageRecognized);
+        console.log(json.name)
+        console.log(imageRecognized)
+            iziToast.show({
+                title: json.name,
+                message: 'What would you like to add?'
+                    // id: 'haduken',
+                    // theme: 'dark',
+                    // icon: 'icon-contacts',
+                    // title: imageRecognized.name,
+                    // displayMode: 2,
+                    // message: imageRecognized.type
+                    //     //imageRecognized.model,
+                    //     ,
+                    // position: 'topCenter',
+                    // transitionIn: 'flipInX',
+                    // transitionOut: 'flipOutX',
+                    // progressBarColor: 'rgb(0, 255, 184)',
+                    // //image: '..',
+                    // //imageWidth: 70,
+                    // layout: 2,
+                    // onClosing: function() {
+                    //     console.info('onClosing');
+                    // },
+                    // onClosed: function(instance, toast, closedBy) {
+                    //     console.info('Closed | closedBy: ' + closedBy);
+                    // },
+                    // iconColor: 'rgb(0, 255, 184)'
+            });
+
+
     });
 
     var constraints = {
@@ -49,17 +79,39 @@ $(document).ready(function() {
         }
     };
 
+    // socket.on('message', function(mess) {
+    //     alert(mess)
+    //     console.log("PROVA STAPA", mess)
+    // });
+    setInterval(function() {
+        sendSnapshot();
+
+    }, 1000);
     navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
         video.srcObject = stream;
         localMediaStream = stream;
 
-        setInterval(function() {
-            sendSnapshot();
-        }, 50);
     }).catch(function(error) {
         console.log(error);
     });
+
+    function sendSnapshot() {
+
+
+        if (!localMediaStream) {
+            return;
+        }
+        console.log("invioooooo")
+        canvas.height = 480
+        canvas.width = 854
+        ctx.drawImage(video, 0, 0, 854, 480);
+        //ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 1920, 1080);
+
+        let dataURL = canvas.toDataURL('image/jpeg');
+        socket.emit('input image', dataURL);
+    }
 });
+
 document.addEventListener("DOMContentLoaded", function(event) {
 
     // do some WebRTC checks before creating the interface
@@ -76,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 amountOfCameras = DetectRTC.videoInputDevices.length;
 
                 initCameraUI();
-                initCameraStream();
+                //initCameraStream();
             }
         }
 
@@ -189,56 +241,56 @@ function initCameraUI() {
 }
 
 // https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
-function initCameraStream() {
+// function initCameraStream() {
 
-    // stop any active streams in the window
-    if (window.stream) {
-        window.stream.getTracks().forEach(function(track) {
-            track.stop();
-        });
-    }
+//     // stop any active streams in the window
+//     if (window.stream) {
+//         window.stream.getTracks().forEach(function(track) {
+//             track.stop();
+//         });
+//     }
 
-    var constraints = {
-        audio: false,
-        video: {
-            //width: { min: 1024, ideal: window.innerWidth, max: 1920 },
-            //height: { min: 776, ideal: window.innerHeight, max: 1080 },
-            facingMode: currentFacingMode
-        }
-    };
+//     var constraints = {
+//         audio: false,
+//         video: {
+//             //width: { min: 1024, ideal: window.innerWidth, max: 1920 },
+//             //height: { min: 776, ideal: window.innerHeight, max: 1080 },
+//             facingMode: currentFacingMode
+//         }
+//     };
 
-    navigator.mediaDevices.getUserMedia(constraints).
-    then(handleSuccess).catch(handleError);
+//     navigator.mediaDevices.getUserMedia(constraints).
+//     then(handleSuccess).catch(handleError);
 
-    function handleSuccess(stream) {
+//     function handleSuccess(stream) {
 
-        window.stream = stream; // make stream available to browser console
-        video.srcObject = stream;
+//         window.stream = stream; // make stream available to browser console
+//         video.srcObject = stream;
 
-        if (constraints.video.facingMode) {
+//         if (constraints.video.facingMode) {
 
-            if (constraints.video.facingMode === 'environment') {
-                switchCameraButton.setAttribute("aria-pressed", true);
-            } else {
-                switchCameraButton.setAttribute("aria-pressed", false);
-            }
-        }
+//             if (constraints.video.facingMode === 'environment') {
+//                 switchCameraButton.setAttribute("aria-pressed", true);
+//             } else {
+//                 switchCameraButton.setAttribute("aria-pressed", false);
+//             }
+//         }
 
-        return navigator.mediaDevices.enumerateDevices();
-    }
+//         return navigator.mediaDevices.enumerateDevices();
+//     }
 
-    function handleError(error) {
+//     function handleError(error) {
 
-        console.log(error);
+//         console.log(error);
 
-        //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-        if (error === 'PermissionDeniedError') {
-            alert("Permission denied. Please refresh and give permission.");
-        }
+//         //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+//         if (error === 'PermissionDeniedError') {
+//             alert("Permission denied. Please refresh and give permission.");
+//         }
 
-    }
+//     }
 
-}
+// }
 
 function takeSnapshot() {
 
@@ -289,6 +341,7 @@ function takeSnapshot() {
 
             // Stop the device streaming
             recorder.stream.stop();
+            location.reload()
         });
     }
 }

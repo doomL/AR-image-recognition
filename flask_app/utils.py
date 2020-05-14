@@ -44,34 +44,27 @@ def toRGB(image):
 
 
 class loadImg:
-    def __init__(self,mysql,session):
-        
-        selectImageQuery="SELECT id,base64 FROM images WHERE azienda = %s" 
-        
-        cur = mysql.connection.cursor()
-        
-        cur.execute(selectImageQuery,(session["azienda"],))
 
-        dbImages=cur.fetchall()
+    # def __init__(self,mysql,session):
+        
+    #     selectImageQuery="SELECT id,base64 FROM images WHERE azienda = %s" 
+        
+    #     cur = mysql.connection.cursor()
+        
+    #     cur.execute(selectImageQuery,(session["azienda"],))
 
-        # for row in dbImages:
-        #    print(row)
+    #     dbImages=cur.fetchall()
 
-        #print("QUA")
-        # print(dbImages[0][0])
+    #     self.id_Images = {} # array associativo tra id e base64 dal DB
+    #     for singleImage in dbImages:
+    #         self.id_Images[singleImage[0]] =  toRGB(stringToImage(singleImage[1]))
+
+    def __init__(self,db,session,Images):
+        
+        dbImages = db.session.query(Images).filter_by(azienda=session["azienda"]).all()
 
         self.id_Images = {} # array associativo tra id e base64 dal DB
         for singleImage in dbImages:
-            self.id_Images[singleImage[0]] =  toRGB(stringToImage(singleImage[1]))
+            self.id_Images[singleImage.id] =  toRGB(stringToImage(singleImage.base64))
 
-        #print(self.id_Images)
-            
-        #print(self.id_Images)
-
-        #self.imgArray = [cv2.imread(file) for file in glob.glob("images/dataset/*.jpg")]
-        
-        # print(len(self.imgArray), "la lunghezza dell'array")
-        #self.imgData = cv2.imread('images/maintenance.jpg', -1)
-
-        #if self.imgArray is None:
-        #    print('Could not open or find the images!')
+    

@@ -12,8 +12,8 @@
 #mainNav .navbar-toggler {
     font-size: 80%;
     padding: .75rem;
-    color: #64a19d;
-    border: 1px solid #64a19d
+    color: CornflowerBlue;
+    border: 1px solid CornflowerBlue
 }
 
 #mainNav .navbar-toggler:focus {
@@ -21,7 +21,7 @@
 }
 
 #mainNav .navbar-brand {
-    color: #161616;
+    color: CornflowerBlue;
     font-weight: 700;
     padding: .9rem 0
 }
@@ -65,10 +65,10 @@
         background-color: #fff
     }
     #mainNav.navbar-shrink .navbar-brand {
-        color: #161616
+        color: CornflowerBlue
     }
     #mainNav.navbar-shrink .nav-link {
-        color: #161616;
+        color: CornflowerBlue;
         padding: 1.5rem 1.5rem 1.25rem;
         border-bottom: .25rem solid transparent
     }
@@ -91,7 +91,7 @@
     height: auto;
     min-height: 35rem;
     padding: 15rem 0;
-    background: linear-gradient(to bottom, rgba(22, 22, 22, .3) 0, rgba(22, 22, 22, .7) 75%, #161616 100%), url(../images/bg-masthead.jpg);
+    background: linear-gradient(to bottom, rgba(22, 22, 22, .3) 0, rgba(22, 22, 22, .7) 75%, CornflowerBlue 100%), url(../images/sfondo1.png);
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: scroll;
@@ -165,7 +165,7 @@
 
 .about-section {
     padding-top: 10rem;
-    background: linear-gradient(to bottom, #161616 0, rgba(22, 22, 22, .9) 75%, rgba(22, 22, 22, .8) 100%)
+    background: linear-gradient(to bottom, CornflowerBlue 0, rgba(22, 22, 22, .9) 75%, rgba(22, 22, 22, .8) 100%)
 }
 
 .about-section p {
@@ -205,7 +205,7 @@
 
 .signup-section {
     padding: 10rem 0;
-    background: linear-gradient(to bottom, rgba(22, 22, 22, .1) 0, rgba(22, 22, 22, .5) 75%, #161616 100%), url(../images/bg-signup.jpg);
+    background: linear-gradient(to bottom, rgba(22, 22, 22, .1) 0, rgba(22, 22, 22, .5) 75%, CornflowerBlue 100%), url(../images/bg-signup.png);
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: scroll;
@@ -283,7 +283,7 @@ a:hover {
 }
 
 .bg-black {
-    background-color: #161616!important
+    background-color: CornflowerBlue!important
 }
 
 .bg-primary {

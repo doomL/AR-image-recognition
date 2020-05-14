@@ -1,37 +1,119 @@
 from sys import stdout
 import logging
-from flask import Flask, render_template, Response, request, redirect,url_for, abort,jsonify,session
-from flask_socketio import SocketIO
+from flask import Flask, render_template, Response, request, redirect,url_for, abort,jsonify,session,json
+from flask_socketio import SocketIO,send,emit
 from flask_mysqldb import MySQL
-import numpy as npMySQL
+import numpy as np
 from camera import Camera
 #from Camera import Camera
-from utils import base64_to_pil_image, pil_image_to_base64,stringToImage,findPoints,loadImg
+from utils import base64_to_pil_image, pil_image_to_base64,stringToImage,findPoints,loadImg,toRGB
 import cv2
 import AlgorithmChooser
 from AlgorithmChooser import SiftAlgorithm,SurfAlgorithm,OrbAlgorithm,AkazeAlgorithm,OrbHarrisAlgorithm
 from Context import Context
+from flask_sqlalchemy import SQLAlchemy
+from Database import Database
+from uuid import UUID
+import cv2
+# from database import User,Images,Azienda
+
 
 app = Flask(__name__)
 #app.logger.addHandler(logging.StreamHandler(stdout))
 log= logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:''@localhost/arsistant'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://'':''@localhost/alchemy'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
+
+# CREO IL SOCKET
 socketio = SocketIO(app)
 
 #Database Configuration
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'admin'
-app.config['MYSQL_DB'] = 'arsistant'
+database = Database(app)
 
-# app.config['MYSQL_HOST'] = '192.168.1.145'
-# app.config['MYSQL_USER'] = 'admin'
-# app.config['MYSQL_DB'] = 'arsistant'
-# app.config['MYSQL_PORT'] = '3306'
+# loadToDb = False
+# CREO GLI OGGETTI DEL DB
 
-mysql=MySQL(app)
-  
+class User(database.db.Model):
+
+    username = database.db.Column(database.db.String(30),primary_key=True)
+    password = database.db.Column(database.db.String(30))
+    azienda = database.db.Column(database.db.String(20))
+    email = database.db.Column(database.db.String(30),unique = True)
+    admin = database.db.Column(database.db.Boolean)
+
+    def __init__(self,username,password,azienda,email,admin):
+        self.username = username
+        self.password = password
+        self.azienda = azienda
+        self.email = email
+        self.admin = admin
+
+class Imagesdata(database.db.Model):
+    id = database.db.Column(database.db.Integer,primary_key=True)
+    idimg = database.db.Column(database.db.Integer)
+    harrisDescriptor= database.db.Column(database.db.String(64))
+    harrisKeypoints= database.db.Column(database.db.String(4294000000))
+
+    def __init__(self,idimg,harrisDescriptor,harrisKeypoints):
+        self.idimg=idimg
+        self.harrisDescriptor = harrisDescriptor
+        self.harrisKeypoints = harrisKeypoints
+
+
+class Images(database.db.Model):
+
+    id = database.db.Column(database.db.Integer,primary_key=True)
+    name = database.db.Column(database.db.String(30))
+    model = database.db.Column(database.db.String(20))
+    type = database.db.Column(database.db.String(20))
+    floor = database.db.Column(database.db.String(20))
+    azienda = database.db.Column(database.db.String(20))
+    # path = database.db.Column(database.db.String(20))
+    base64 = database.db.Column(database.db.String(4294000000))
+    
+    
+
+    def __init__(self,name,model,type,floor,base64,azienda):
+        self.name = name
+        self.model = model
+        self.type = type
+        self.floor = floor
+        self.base64 = base64
+        self.azienda = azienda
+
+    
+class Azienda(database.db.Model):
+
+    id = database.db.Column(database.db.Integer,primary_key=True)
+    name = database.db.Column(database.db.String(30))
+    code = database.db.Column(database.db.String(30))
+    floors = database.db.Column(database.db.String(2))
+
+    def __init__(self,name):
+        self.name = name
+
+# popolo il db con le tabelle vuote
+# database.db.create_all() 
+
+# username password azienda mail admin
+# ines = User("Inessina", "ciao","chimica","ines@gmail.com",False)
+#aggiungo così
+# database.db.session.add(ines)
+# database.db.session.commit()
+
+# per vedere se esiste qualcosa con quell'attributo
+# esiste = database.db.session.query(User).filter_by(username='tappeto').first()
+# print("esiste : ",esiste)
+# si elimina così
+# database.db.session.delete(User.query.filter_by(username='Inessina').first())
+# database.db.session.commit()
+
+# database.db.session.add(Imagesdata(1,"a","a"))
+# database.db.session.commit()
 
 def switchAlg(number,loader):
     if number == 0:
@@ -43,10 +125,10 @@ def switchAlg(number,loader):
     elif number == 2:
         return OrbAlgorithm(loader)
 
-    elif number ==3:
+    elif number == 3:
         return AkazeAlgorithm(loader)
 
-    elif number ==4:
+    elif number == 4:
         return OrbHarrisAlgorithm(loader)
 
         
@@ -60,33 +142,39 @@ context = Context(algChoose)
 camera = Camera(context)
 # surfAlg()
 
-@socketio.on('input image', namespace='/test')
-def test_message(input):
-    input = input.split(",")[1]
-    camera.enqueue_input(input)
-    #camera.enqueue_input(base64_to_pil_image(input))
-    if camera.get_result()!=None:
-        getObject(camera.get_result())
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
     app.logger.info("client connected")
 
+@socketio.on('input image', namespace='/test')
+def test_message(input):
+    # print(input)
+    input = input.split(",")[1]
+    # print("ENTRO QUAAAAAAAAAAAAA")
+    camera.enqueue_input(input)
+    #camera.enqueue_input(base64_to_pil_image(input))
+    if camera.get_result()!=None:       
+        # recObj = database.db.session.query(Images).filter_by(id=).first()
+        emit('responseImageInfo',getObject(camera.get_result()))
+    # socketio.send(13421)
+
+# DA MODIFICAREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 @app.route('/getObject',methods=['POST','GET']) 
 def getObject(curr_id):
-    cur = mysql.connection.cursor()
+    recognizedObject = database.db.session.query(Images).filter_by(id=curr_id).first()
 
-    selectQuery="SELECT * FROM images WHERE id = %s "
-    
-    cur.execute(selectQuery,(curr_id,))
-    
-    recognizedObject=cur.fetchone()
+    obj = {
+        'id': recognizedObject.id,
+        'name': recognizedObject.name,
+        'model':recognizedObject.model,
+        'type':recognizedObject.type,
+        'floor':recognizedObject.floor,
+        'base64':recognizedObject.base64
 
-    mysql.connection.commit()
-    cur.close()
-
-    return jsonify(name=recognizedObject[1],model=recognizedObject[2],type=recognizedObject[3],floor=recognizedObject[4]),500
-    
+    }
+    # print(obj)
+    return json.dumps(obj)
 
 @app.route('/')
 def index():
@@ -97,57 +185,54 @@ def index():
 def signUp():
     return render_template('signUp.html')
 
-@app.route('/registration', methods=['POST'])
-def registration():
-    cur = mysql.connection.cursor()
+# DA MODIFICARE FORSE INUTILIZZATA, registrazione vecchia
+# @app.route('/registration', methods=['POST'])
+# def registration():
+
+#     cur = mysql.connection.cursor()
     
-    #Trovare azieda con codiceAzienda
-    selectQuery="SELECT * FROM azienda WHERE code = %s" 
+#     #Trovare azieda con codiceAzienda
+#     selectQuery="SELECT * FROM azienda WHERE code = %s" 
     
-    if not cur.execute(selectQuery,(request.form["azienda"],)):
-        return jsonify(message='AziendaCode_error'),500
+#     if not cur.execute(selectQuery,(request.form["azienda"],)):
+#         return jsonify(message='AziendaCode_error'),500
 
 
-    print(cur.execute("INSERT INTO user(username,password,email,azienda,admin) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["pass"] , request.form["email"] , request.form["azienda"],0)))
+#     print(cur.execute("INSERT INTO user(username,password,email,azienda,admin) VALUES(%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["pass"] , request.form["email"] , request.form["azienda"],0)))
     
-    mysql.connection.commit()
-    cur.close()
+#     mysql.connection.commit()
+#     cur.close()
 
-    return "OK"
+#     return "OK"
+
 
 
 @app.route('/login')
 def login():
     return render_template('login.html')
 
+
 @app.route('/login1', methods=['POST'])
-def login1():
-    username=request.form["name"]
-    password=request.form["pass"]
-    cur = mysql.connection.cursor()
+def accedi():
 
-    selectQuery="SELECT * FROM user WHERE username = %s AND password = %s" 
+    esisteUtente = database.db.session.query(User).filter_by(password=request.form["pass"],username = request.form["name"]).first()
 
-    aziendaQuery="SELECT azienda FROM user WHERE username = %s "
-    
-    adminQuery="SELECT * FROM user WHERE username = %s AND admin = 1"
-    if cur.execute(selectQuery,(username,password)):
-        session["username"]=username
-        cur.execute(aziendaQuery,(username,))
-        aziende=cur.fetchone()
-        azienda=aziende[0]
-
-        isAdmin=cur.execute(adminQuery,(username,))                          
-        print(isAdmin)
-        mysql.connection.commit()
-        cur.close()
-        session["azienda"]=azienda
-        session["admin"]=isAdmin
+    if esisteUtente != None:
+        session["username"]=request.form["name"]
         session["loggato"]=1
-        
-        return "OK"
-    else:
-        return jsonify(message='Username O Password Errati'),500
+        azienda = database.db.session.query(User.azienda).filter_by(username = request.form["name"]).first()
+        session["azienda"]=azienda
+        # print(session["azienda"])
+        isAdmin = database.db.session.query(User).filter_by(username = request.form["name"],admin=1).first()
+        # print("is admin : ",isAdmin)
+        if isAdmin != None:
+            session["admin"] = 1
+        # print("PUOI ACCEDERE")
+        return "ACCESSO EFFETTUATO"
+
+    
+    return jsonify(message='Username O Password Errati'),500
+
 
 
 @app.route('/logout', methods=['GET'])
@@ -159,25 +244,14 @@ def logout():
     # session.clear()
     return render_template('landing.html')
 
-     
-# @app.route("/chooseAlg", methods=['POST'])
-# def chooseAlg():
-#     print("CambioAlgoritmo")
-#     currAlgorithm=request.form.get("alg")
-#     print(currAlgorithm)
-#     context = Context.Context(switchAlg(currAlgorithm))
-#     camera = Camera(context)
-#     return render_template("index.html")
-
-
 
 @app.route("/saveVideo/", methods=['POST'])
 def saveVideo():
     if int(request.form['json_str'])%2==0:
-        print("Servlet di save video") 
+        # print("Servlet di save video") 
         camera.recording(True)
     elif int(request.form['json_str'])%2!=0:
-        print("Servlet di stop video")
+        # print("Servlet di stop video")
         camera.stopRec(False)    
     return "OK"
 
@@ -187,14 +261,15 @@ def surfAlg():
     print("Surf servlet")
     # if context == None:
     #     print("Context prima A None")
-    loader=loadImg(mysql,session)
+    # loader=loadImg(mysql,session)
+    loader=loadImg(database.db,session,Images)
     algChoose = switchAlg(0,loader) #1
     context.setStrategy2(algChoose)
     camera = Camera(context)
     session["algorithm"]=1 #
 
-    if context == None:
-        print("Context dopo A None")
+    # if context == None:
+    #     # print("Context dopo A None")
     return render_template('index.html')
 
 
@@ -204,29 +279,33 @@ def akazeAlg():
     print("Akaze servlet")
     # if context == None:
     #     print("Context prima A None")
-    loader=loadImg(mysql,session)
+    # loader=loadImg(mysql,session)
+    loader=loadImg(database.db,session,Images)
     algChoose = switchAlg(3,loader)
     context.setStrategy2(algChoose)
     camera = Camera(context)
     session["algorithm"]=4
 
-    if context == None:
-        print("Context dopo A None")
+    # if context == None:
+    #     print("Context dopo A None")
     return render_template('index.html')
+
+
 
 @app.route("/sift/", methods=['GET','POST'])
 def siftAlg():
     print("Sift servlet")
     # if context == None:
     #     print("Context prima A None")
-    loader=loadImg(mysql,session)
+    # loader=loadImg(mysql,session)
+    loader=loadImg(database.db,session,Images)
     algChoose = switchAlg(1,loader)
     context.setStrategy2(algChoose)
     camera = Camera(context)
     session["algorithm"]=2
 
-    if context == None:
-        print("Context dopo None")
+    # if context == None:
+    #     print("Context dopo None")
     return render_template("Index.html")
 
 
@@ -235,14 +314,15 @@ def orbAlg():
     print("Orb servlet")
     # if context == None:
     #     print("Context prima A None")
-    loader=loadImg(mysql,session)
+    # loader=loadImg(mysql,session)
+    loader=loadImg(database.db,session,Images)
     algChoose = switchAlg(2,loader)
     context.setStrategy2(algChoose)
     camera = Camera(context)
     session["algorithm"]=3
 
-    if context == None:
-        print("Context dopo None")
+    # if context == None:
+    #     print("Context dopo None")
     return render_template("Index.html")
 
 
@@ -251,80 +331,111 @@ def orbHarrisAlg():
     print("OrbHarris servlet")
     # if context == None:
     #     print("Context prima A None")
-    loader=loadImg(mysql,session)
+    # loader=loadImg(mysql,session)
+    loader=loadImg(database.db,session,Images)
     algChoose = switchAlg(4,loader) 
     context.setStrategy2(algChoose)
     camera = Camera(context)
     session["algorithm"]=5 
 
-    if context == None:
-        print("Context dopo A None")
+    # if context == None:
+    #     print("Context dopo A None")
     return render_template('index.html')
 
-2
 def gen():
     """Video streaming generator function."""
 
     app.logger.info("starting to generate frames!")
-    cv2.imwrite("frame3.png",camera.get_frame())
+    # cv2.imwrite("frame3.png",camera.get_frame())
     while True:
         # print("++++++++++++++++")
         frame = camera.get_frame() #pil_image_to_base64(camera.get_frame())
-        print("*************")
+        # print("*************")
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-1
+@app.route('/information')
+def sendInformation():
+    pass
+
+
+
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    print ("VIDEO FEED")
+    # print ("VIDEO FEED")
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/admin',methods=['GET', 'POST'])
-def admin():
-    selectImageQuery="SELECT * FROM images WHERE azienda = %s" 
-        
-    cur = mysql.connection.cursor()
-        
-    cur.execute(selectImageQuery,(session["azienda"],))
+def mostraImmaginiManager():
 
-    dbImages=cur.fetchall()
+    aziendaImg = database.db.session.query(Images).filter_by(azienda=session["azienda"]).all()
 
-    return render_template('admin.html', images=dbImages)
+    return render_template('admin.html', images=aziendaImg)
 
 
+
+# ADMIN CHE PUO AGGIUNGERE UTENTI, SOLO SE NON GIA REGISTRATI NE CON LA MAIL NE CON LO USERNAME
 @app.route('/addUser',methods=['GET', 'POST'])
 def addUser():
-    userMail="SELECT * FROM user WHERE email = %s" 
-    username="SELECT * FROM user WHERE username = %s" 
 
-    
-    cur = mysql.connection.cursor()
-    
-    # posso aggiungere solo se non ne esiste uno con la stessa mail o id
-    if cur.execute(userMail,(request.form["email"],)) == 0 and cur.execute(username,(request.form["username"],)) == 0:
-        print(cur.execute("INSERT INTO user(username,password,email,azienda,admin) VALUES(%s,%s,%s,%s,%s)" ,(request.form["username"] , request.form["password"] , request.form["email"] , session["azienda"] , 0 )))
-    
-    mysql.connection.commit()
-    cur.close()
-    
+    esisteUsername = database.db.session.query(User).filter_by(username=request.form["username"]).first()
+    esisteMail = database.db.session.query(User).filter_by(email=request.form["email"]).first()
+
+    # print("Esiste username",esisteUsername)
+    # print("Esiste mail",esisteMail)
+
+    # aggiungo solo se non ho ne lo username e ne la mail nel db
+    if esisteUsername == None and esisteMail == None:
+
+        username = request.form["username"]
+        password = request.form["password"]
+        email = request.form["email"]
+        azienda = session["azienda"]
+
+
+        nuovoUtente = User(username, password,azienda,email,False)
+        database.db.session.add(nuovoUtente)
+        database.db.session.commit()
+        print("AGGIUNGO NUOVO UTENTE")
+    else:
+        print("NON AGGIUNGO UTENTE GIA REGISTRATO")
+
+
     return render_template('landing.html')
-    
-    
 
+
+@app.route('/deleteUser',methods=['GET', 'POST'])
+def deleteUser():
+
+    esisteUsername = database.db.session.query(User).filter_by(username=request.form["usernameDaEliminare"]).first()
+    # esisteMail = database.db.session.query(User).filter_by(email=request.form["emailDaEliminare"]).first()
+
+    print("Esiste username",esisteUsername)
+    # print("Esiste mail",esisteMail)
+
+    # inserisco lo username da cancellare, se c'e' elimino
+    if not esisteUsername == None:
+        database.db.session.delete(User.query.filter_by(username=request.form["usernameDaEliminare"]).first())
+        database.db.session.commit()
+        # print("ELIMINATO")
+        return "ELIMINATO"
+
+    # print("NON ELIMINATO")
+    return "NON ELIMINATO"
+
+
+
+# funziona
 @app.route('/deleteImg',methods=['POST'])
 def deleteImg():
-    cur = mysql.connection.cursor()
-    print(request.form['id'])
-    deleteQuery="DELETE FROM images WHERE id = %s "
-    cur.execute(deleteQuery,(request.form["id"],))
+    
+    # print("ID E' : ",request.form['id'])
 
-    mysql.connection.commit()
-
-    cur.close()
+    database.db.session.delete(Images.query.filter_by(id=request.form['id']).first())
+    database.db.session.commit()
 
     return "OK deleteImg"
 
@@ -336,14 +447,34 @@ def landing():
     return render_template('landing.html')
     
 @app.route('/adminm',methods=['POST'])
-def adminm():
+def aggiungiImmagine():
+
     imgString=request.form["images[0][url]"].split(",")#[23:]
-    cur = mysql.connection.cursor()
-    print(cur.execute("INSERT INTO images(name,model,type,floor,base64,azienda) VALUES(%s,%s,%s,%s,%s,%s)" ,(request.form["name"] , request.form["model"] , request.form["type"] , request.form["floor"] , imgString[1],session["azienda"])))
-    mysql.connection.commit()
-    cur.close()
-    # findPoints(imgString[1])
-    return render_template('init.html')
+    nuovaImmagine = Images(request.form["name"] , request.form["model"] , request.form["type"] , request.form["floor"] , imgString[1],session["azienda"])
+    database.db.session.add(nuovaImmagine)
+    database.db.session.commit()
+    # database.db.session.flush()
+    # idImg = database.db.session.query(Images.id).filter_by(name=request.form['id']).first())
+    # calcolaDatiImg(nuovaImmagine.id,imgString[1])
+    print("immagine aggiunta")
+    return "OK"
+
+
+def calcolaDatiImg(idImg,base64):
+    detector = cv2.ORB_create(nfeatures=500)
+    img = toRGB(stringToImage(base64))
+    keyP = detector.detectAndCompute(img,None)[0]
+    desc = detector.detectAndCompute(img,None)[1]
+    print("ID IMG ", idImg)
+    print("ID KEY ", keyP)
+    print("ID DESC ", desc)
+    nuoviDati = Imagesdata(idImg,"desc",keyP)
+
+    database.db.session.add(nuoviDati)
+    database.db.session.commit()
+    
+
+
 
 
 if __name__ == '__main__':

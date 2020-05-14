@@ -9,6 +9,7 @@
         uploadImage()
         submit()
         addUser()
+        deleteUser()
         resetButton()
         removeNotification()
         autoRemoveNotification()
@@ -151,6 +152,31 @@
                     url: '/addUser',
                     type: 'POST',
                     data: { 'username': username.val(),'password':md5(password.val()),'email':email.val()},
+                    success: function(response) {
+                        location.reload();
+
+                    }
+                })
+
+            })
+        }
+
+
+        function deleteUser() {
+            var userButton = $('#userDelete')
+
+            userButton.on('click', function() {
+                var username = $('#usernameDaEliminare')
+                var email = $('#emailDaEliminare')
+
+                
+                console.log(username)
+                console.log(email)
+
+                $.ajax({
+                    url: '/deleteUser',
+                    type: 'POST',
+                    data: { 'usernameDaEliminare': username.val(),'emailDaEliminare':email.val()},
                     success: function(response) {
                         location.reload();
 
@@ -308,3 +334,5 @@ function manage(id, name, model, type, floor) {
 
     })
 }
+
+

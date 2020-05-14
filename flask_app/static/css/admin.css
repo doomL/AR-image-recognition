@@ -1,7 +1,7 @@
 body {
-    background-color: lightgray;
-    background-image: url('../images/bg-masthead.jpg');
-    background-size: cover;
+    background-color: DarkBlue;
+    background-image: url('../images/sfondo1.png');
+    /*background-size: cover; */
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -188,7 +188,7 @@ section select {
 .images .img {
     width: 112px;
     height: 93px;
-    background-size: cover;
+    /*background-size: cover; */
     margin-right: 10px;
     background-position: center;
     display: flex;

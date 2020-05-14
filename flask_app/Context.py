@@ -15,7 +15,7 @@ import AlgorithmChooser
 
 class Context:
     def __init__(self, strategyChoose : AlgorithmChooser):
-        print("Costruttore di Context")
+        # print("Costruttore di Context")
         self.result=None
         self.strategy = strategyChoose
 

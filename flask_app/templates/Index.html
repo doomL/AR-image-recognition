@@ -11,11 +11,14 @@
     <title>Mobile First Camera Template</title>
     <link rel="stylesheet" type="text/css" href="../static/css/dropdown.css">
     <link rel="stylesheet" type="text/css" href="../static/css/webcamTemplate.css">
+    <link rel="stylesheet" href="../static/css/iziToast.min.css"> 
+
+    <link rel="shortcut icon" href="../static/images/favicon.ico" />
 </head>
 
 <body>
 
-    <img src="{{ url_for('video_feed') }}" hidden="true">
+    <!-- <img src="{{ url_for('video_feed') }}" hidden="true"> -->
     <div id="container">
         <div id="vid_container">
             <video autoplay id="videoElement" playsinline></video>
@@ -65,11 +68,13 @@
         </div>
     </div>
     <script src="../static/js/DetectRTC.min.js"></script>
-    <script src="../static/js/adapter.min.js"></script>
+    <!-- <script src="../static/js/adapter.min.js"></script> -->
     <script src="../static/js/screenfull.min.js"></script>
     <script src="../static/js/howler.core.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script src="../static/js/iziToast.min.js" type="text/javascript"></script>
     <script src="../static/js/camTemplate.js"></script>
     <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>

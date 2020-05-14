@@ -44,15 +44,10 @@ class Camera:
         # convert it to a pil image
         self.input_img = base64_to_pil_image(self.input_str)
 
-        # cv2.imwrite("inputImg.png",np.asarray(self.input_img)) va ma e' 0kb
-        # cv2.imwrite("inputStr.png",np.asarray(self.input_str)) non va
-
-        ################## where the hard work is done ############
-        # output_img is an PIL image
-        # self.output_img = self.context.doAlgorithm(self.input_img)
 
         if  self.input_img != None:
-            self.result=self.context.doAlgorithm(self.input_img)
+            b,g,r = cv2.split(np.asarray(self.input_img))
+            self.result=self.context.doAlgorithm(cv2.merge([r,g,b]))
 
         # salvataggio video
         if self.rec:
@@ -64,7 +59,6 @@ class Camera:
 
     def keep_processing(self):
         # questa sleep evita che si matchi prima che i descriptor vengono
-        # caricati, va cambiata con un controllo su quando va iniziato a matchare
         while True:
             # sleep(5) #forse risolto
             self.process_one()
