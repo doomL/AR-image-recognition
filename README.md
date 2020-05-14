@@ -10,6 +10,13 @@ PYTHON 3.6.x VERSION or 3.7 RECOMMNENDED
 
 * *pip install -r requirements*
 
+### Setup Database
+
+* Create new Database named arsistant
+* Import *db.sql* into arsistant database
+* Create 'admin' User in privilege settings without password
+
+
 ### Running Flask
 
 * *py app.py*
