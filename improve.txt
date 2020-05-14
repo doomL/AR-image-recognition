@@ -1,2 +1,0 @@
-Per migliorare l'accuratezza di ORB bisogna migliorare : "increase the detector's threshold" fonte-> https://answers.opencv.org/question/33703/improving-orborb-accuracy-on-mobile-with-opencv/
-fonte 2 -> https://www.researchgate.net/post/What_is_the_threshold_of_ORB_Hamming_distance_matching

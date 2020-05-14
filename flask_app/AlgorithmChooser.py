@@ -59,7 +59,7 @@ class SiftAlgorithm(AlgorithmChooser):
                 # print(self.descriptorsArr[index])
                 # print("descriptor",self.descriptorsFrame)
                 knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArrDict[curr_Id], self.descriptorsFrame, 2)
-                cv2.imwrite("frame.png",self.frame)
+                # cv2.imwrite("frame.png",self.frame)
                 for m, n in knn_matchesFrame:
                     if m.distance < self.ratio_tresh * n.distance:
                         self.good_matches.append(m)
@@ -126,11 +126,8 @@ class SurfAlgorithm(AlgorithmChooser):
         if(np.all(self.descriptorsFrame!=None)):
 
             for curr_Id in self.loader.id_Images:
-                cv2.imwrite("frame.png",self.loader.id_Images[curr_Id])
-                # cv2.imwrite("frame.png",self.frame)
-                # cv2.imwrite("frame.txt",self.frame)
-                # print(self.descriptorsArr[index])
-                #print("descriptor",s   elf.descriptorsFrame)
+                # cv2.imwrite("frame.png",self.loader.id_Images[curr_Id])
+    
                 knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArrDict[curr_Id], self.descriptorsFrame,2)
 
                 for m, n in knn_matchesFrame:
@@ -191,7 +188,7 @@ class OrbAlgorithm(AlgorithmChooser):
 
                 for m, n in knn_matchesFrame:
 
-                    cv2.imwrite("frame.png",self.frame)
+                    # cv2.imwrite("frame.png",self.frame)
                     if m.distance < self.ratio_tresh * n.distance:
                         # print("ENTRO 3")
                         self.good_matches.append(m)
@@ -221,7 +218,7 @@ class OrbHarrisAlgorithm(AlgorithmChooser):
         self.keypointsArrDict= {}
         self.descriptorsArrDict= {}        
 
-        prima=datetime.timestamp(datetime.now())
+        # prima=datetime.timestamp(datetime.now())
         for curr_Id in self.loader.id_Images:
             self.keypointsArrDict[curr_Id] = self.detector.detectAndCompute(
                 self.loader.id_Images[curr_Id], None)[0]
@@ -229,8 +226,8 @@ class OrbHarrisAlgorithm(AlgorithmChooser):
             self.descriptorsArrDict[curr_Id] = self.detector.detectAndCompute(
                 self.loader.id_Images[curr_Id], None)[1]
 
-        dopo=datetime.timestamp(datetime.now())
-        print("TEMPO PER CARICARE : ",len(self.loader.id_Images)," ",dopo-prima)
+        # dopo=datetime.timestamp(datetime.now())
+        # print("TEMPO PER CARICARE : ",len(self.loader.id_Images)," ",dopo-prima)
         self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
 
         self.ratio_tresh = 0.9
@@ -250,7 +247,7 @@ class OrbHarrisAlgorithm(AlgorithmChooser):
             for curr_Id in self.loader.id_Images:
                 knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArrDict[curr_Id], self.descriptorsFrame, 2)
 
-                cv2.imwrite("frame.png",self.frame)
+                # cv2.imwrite("frame.png",self.frame)
                 for m, n in knn_matchesFrame:
                     if m.distance < self.ratio_tresh * n.distance:
                         self.good_matches.append(m)

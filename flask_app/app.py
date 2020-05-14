@@ -399,7 +399,7 @@ def addUser():
         nuovoUtente = User(username, password,azienda,email,False)
         database.db.session.add(nuovoUtente)
         database.db.session.commit()
-        print("AGGIUNGO NUOVO UTENTE")
+        print("Utente aggiunto")
     else:
         print("NON AGGIUNGO UTENTE GIA REGISTRATO")
 
@@ -413,14 +413,14 @@ def deleteUser():
     esisteUsername = database.db.session.query(User).filter_by(username=request.form["usernameDaEliminare"]).first()
     # esisteMail = database.db.session.query(User).filter_by(email=request.form["emailDaEliminare"]).first()
 
-    print("Esiste username",esisteUsername)
+    # print("Esiste username",esisteUsername)
     # print("Esiste mail",esisteMail)
 
     # inserisco lo username da cancellare, se c'e' elimino
     if not esisteUsername == None:
         database.db.session.delete(User.query.filter_by(username=request.form["usernameDaEliminare"]).first())
         database.db.session.commit()
-        # print("ELIMINATO")
+        print("Utente Eliminato")
         return "ELIMINATO"
 
     # print("NON ELIMINATO")
@@ -456,10 +456,12 @@ def aggiungiImmagine():
     # database.db.session.flush()
     # idImg = database.db.session.query(Images.id).filter_by(name=request.form['id']).first())
     # calcolaDatiImg(nuovaImmagine.id,imgString[1])
-    print("immagine aggiunta")
+    print("Immagine aggiunta")
     return "OK"
 
 
+
+# NON FUNZIONANO I KEYPOINTS DA RIGUARDARE
 def calcolaDatiImg(idImg,base64):
     detector = cv2.ORB_create(nfeatures=500)
     img = toRGB(stringToImage(base64))
