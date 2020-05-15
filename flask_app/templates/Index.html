@@ -1,6 +1,9 @@
 >
 <!DOCTYPE html>
 <html lang="en">
+{%if session["loggato"] == None %}
+    return render_template( "landing.html")
+{%endif%}
 
 <head>
     <meta charset="utf-8">

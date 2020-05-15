@@ -36,41 +36,46 @@ $(document).ready(function() {
     socket.on('connection', (socketServer) => {
         console.log("connected")
     });
-
-
+    
+    
+    
     socket.on('responseImageInfo', function(imageRecognized) {
         var json = JSON.parse(imageRecognized);
-        console.log(json.name)
-        console.log(imageRecognized)
-            iziToast.show({
-                title: json.name,
-                message: 'What would you like to add?'
-                    // id: 'haduken',
-                    // theme: 'dark',
-                    // icon: 'icon-contacts',
-                    // title: imageRecognized.name,
-                    // displayMode: 2,
-                    // message: imageRecognized.type
-                    //     //imageRecognized.model,
-                    //     ,
-                    // position: 'topCenter',
-                    // transitionIn: 'flipInX',
-                    // transitionOut: 'flipOutX',
-                    // progressBarColor: 'rgb(0, 255, 184)',
-                    // //image: '..',
-                    // //imageWidth: 70,
-                    // layout: 2,
-                    // onClosing: function() {
-                    //     console.info('onClosing');
-                    // },
-                    // onClosed: function(instance, toast, closedBy) {
-                    //     console.info('Closed | closedBy: ' + closedBy);
-                    // },
-                    // iconColor: 'rgb(0, 255, 184)'
-            });
 
-
+              
+        iziToast.show({
+            id: 'recog',
+            theme: 'dark',
+            icon: 'icon-contacts',
+            title: json.name,
+            displayMode: 2,
+            message: 'Ho riconosciuto questa immagine </br>'+ json.model+ json.type,
+            position: 'topCenter',
+            transitionIn: 'flipInX',
+            transitionOut: 'flipOutX',
+            progressBarColor: 'rgb(0, 255, 184)',
+            image: json.base64,
+            imageWidth: 70,
+            layout: 2,
+            onClosing: function(){
+                console.info('onClosing');
+            },
+            onClosed: function(instance, toast, closedBy){
+                console.info('Closed | closedBy: ' + closedBy);
+            },
+            iconColor: 'rgb(0, 255, 184)'
+        });
+        
     });
+
+    
+
+
+
+
+
+
+
 
     var constraints = {
         video: {

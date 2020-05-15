@@ -153,7 +153,13 @@
                     type: 'POST',
                     data: { 'username': username.val(),'password':md5(password.val()),'email':email.val()},
                     success: function(response) {
-                        location.reload();
+                        iziToast.show({
+                            title: username.val(),
+                            message: 'Aggiunto Correttamente'
+                                
+                            });
+                        // location.reload();
+                        window.setTimeout(function(){location.reload()},2000)
 
                     }
                 })
@@ -178,7 +184,13 @@
                     type: 'POST',
                     data: { 'usernameDaEliminare': username.val(),'emailDaEliminare':email.val()},
                     success: function(response) {
-                        location.reload();
+                        iziToast.show({
+                            title: username.val(),
+                            message: 'Eliminato Corettamente'
+                                
+                            });
+                            // location.reload();
+                            window.setTimeout(function(){location.reload()},2000)
 
                     }
                 })
