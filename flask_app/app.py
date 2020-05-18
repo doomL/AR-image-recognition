@@ -436,6 +436,7 @@ def deleteImg():
 
     database.db.session.delete(Images.query.filter_by(id=request.form['id']).first())
     database.db.session.commit()
+    print("Immagine eliminata ")
 
     return "OK deleteImg"
 
