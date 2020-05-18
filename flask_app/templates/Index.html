@@ -36,9 +36,9 @@
             <div class="button dropdown">
                 <select id="colorselector" onchange="location = this.value;">
                     {%if session['algorithm']== 1 %} 
-                   <option value="/surf" selected>Surf</option>
+                   <option value="/orbHarris" selected>OrbHarris</option>
                    {%else%}
-                   <option value="/surf" >Surf</option>
+                   <option value="/orbHarris" >OrbHarris</option>
                    {%endif%}
                    
                    {%if session['algorithm']== 2 %}
@@ -53,16 +53,16 @@
                    <option value="/orb" >Orb</option>
                    {%endif%}
 
-                   {%if session['algorithm']== 4 %}
+                   <!-- {%if session['algorithm']== 4 %}
                    <option value="/akaze" selected>Akaze</option>
                    {%else%}
                    <option value="/akaze" >Akaze</option>
-                   {%endif%}
+                   {%endif%} -->
 
                    {%if session['algorithm']== 5 %}
-                   <option value="/orbHarris" selected>OrbHarris</option>
+                   <option value="/surf" selected>Surf</option>
                    {%else%}
-                   <option value="/orbHarris" >OrbHarris</option>
+                   <option value="/surf" >Surf</option>
                    {%endif%}
 
                 </select>

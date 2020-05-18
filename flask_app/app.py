@@ -117,7 +117,7 @@ class Azienda(database.db.Model):
 
 def switchAlg(number,loader):
     if number == 0:
-        return SurfAlgorithm(loader)
+        return OrbHarrisAlgorithm(loader)
 
     elif number == 1:
         return SiftAlgorithm(loader)
@@ -125,11 +125,11 @@ def switchAlg(number,loader):
     elif number == 2:
         return OrbAlgorithm(loader)
 
-    elif number == 3:
-        return AkazeAlgorithm(loader)
+    # elif number == 3:
+    #     return AkazeAlgorithm(loader)
 
     elif number == 4:
-        return OrbHarrisAlgorithm(loader)
+        return SurfAlgorithm(loader)
 
         
 
@@ -263,10 +263,10 @@ def surfAlg():
     #     print("Context prima A None")
     # loader=loadImg(mysql,session)
     loader=loadImg(database.db,session,Images)
-    algChoose = switchAlg(0,loader) #1
+    algChoose = switchAlg(4,loader) #1
     context.setStrategy2(algChoose)
     camera = Camera(context)
-    session["algorithm"]=1 #
+    session["algorithm"]=5 #
 
     # if context == None:
     #     # print("Context dopo A None")
@@ -274,21 +274,21 @@ def surfAlg():
 
 
 
-@app.route("/akaze/", methods=['GET','POST'])
-def akazeAlg():
-    print("Akaze servlet")
-    # if context == None:
-    #     print("Context prima A None")
-    # loader=loadImg(mysql,session)
-    loader=loadImg(database.db,session,Images)
-    algChoose = switchAlg(3,loader)
-    context.setStrategy2(algChoose)
-    camera = Camera(context)
-    session["algorithm"]=4
+# @app.route("/akaze/", methods=['GET','POST'])
+# def akazeAlg():
+#     print("Akaze servlet")
+#     # if context == None:
+#     #     print("Context prima A None")
+#     # loader=loadImg(mysql,session)
+#     loader=loadImg(database.db,session,Images)
+#     algChoose = switchAlg(3,loader)
+#     context.setStrategy2(algChoose)
+#     camera = Camera(context)
+#     session["algorithm"]=4
 
-    # if context == None:
-    #     print("Context dopo A None")
-    return render_template('index.html')
+#     # if context == None:
+#     #     print("Context dopo A None")
+#     return render_template('index.html')
 
 
 
@@ -333,10 +333,10 @@ def orbHarrisAlg():
     #     print("Context prima A None")
     # loader=loadImg(mysql,session)
     loader=loadImg(database.db,session,Images)
-    algChoose = switchAlg(4,loader) 
+    algChoose = switchAlg(0,loader) 
     context.setStrategy2(algChoose)
     camera = Camera(context)
-    session["algorithm"]=5 
+    session["algorithm"]=1 
 
     # if context == None:
     #     print("Context dopo A None")
