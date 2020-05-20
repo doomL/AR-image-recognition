@@ -21,6 +21,68 @@ class AlgorithmChooser(ABC):
     def doAlgorithm(self,img):
         pass
 
+
+class OrbHarrisAlgorithm(AlgorithmChooser):
+
+    def __init__(self,loader):
+        print("ORB HARRIS")
+        self.orbMinMatches = 100
+        self.cont=0
+        self.loader = loader
+        minHessian = 500
+        self.detector = cv2.ORB_create(nfeatures=500)
+
+        # print(len(self.loader.imgArray))
+
+        self.keypointsArrDict= {}
+        self.descriptorsArrDict= {}        
+
+        # prima=datetime.timestamp(datetime.now())
+        for curr_Id in self.loader.id_Images:
+            self.keypointsArrDict[curr_Id] = self.detector.detectAndCompute(
+                self.loader.id_Images[curr_Id], None)[0]
+                
+            self.descriptorsArrDict[curr_Id] = self.detector.detectAndCompute(
+                self.loader.id_Images[curr_Id], None)[1]
+
+        # dopo=datetime.timestamp(datetime.now())
+        # print("TEMPO PER CARICARE : ",len(self.loader.id_Images)," ",dopo-prima)
+        self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
+
+        self.ratio_tresh = 0.9
+
+        self.good_matches = deque()
+
+
+# OOOOOOOOOOOOOOOOOORRRRRRRRRRRRRRRRRRRBBBBBBBBBBBBBBBBBBBBBBBB
+
+    def doAlgorithm(self, img):
+        # print("ORB HARRIS")
+        self.frame = np.asarray(img)
+        # print("frame",self.frame)
+        keypointsFrame, self.descriptorsFrame = self.detector.detectAndCompute(self.frame, None)
+
+        if(np.all(self.descriptorsFrame!=None)):
+            for curr_Id in self.loader.id_Images:
+                knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArrDict[curr_Id], self.descriptorsFrame, 2)
+
+                # cv2.imwrite("frame.png",self.frame)
+                for m, n in knn_matchesFrame:
+                    if m.distance < self.ratio_tresh * n.distance:
+                        self.good_matches.append(m)
+
+                print("PRIMA DI PULIRE HO TROVATO", len(self.good_matches))
+
+                if self.good_matches != None and len(self.good_matches) >= self.orbMinMatches:
+                        print("TROVATO MACCHINARIO: ", curr_Id, "CON ",len(self.good_matches),"MATCHES")
+                        self.good_matches.clear()
+                        return curr_Id
+
+                self.good_matches.clear()
+
+
+
+
 class SiftAlgorithm(AlgorithmChooser):
 
     def __init__(self,loader):
@@ -203,63 +265,6 @@ class OrbAlgorithm(AlgorithmChooser):
                 self.good_matches.clear()
 
 
-class OrbHarrisAlgorithm(AlgorithmChooser):
-
-    def __init__(self,loader):
-        print("ORB HARRIS")
-        self.orbMinMatches = 100
-        self.cont=0
-        self.loader = loader
-        minHessian = 500
-        self.detector = cv2.ORB_create(nfeatures=500)
-
-        # print(len(self.loader.imgArray))
-
-        self.keypointsArrDict= {}
-        self.descriptorsArrDict= {}        
-
-        # prima=datetime.timestamp(datetime.now())
-        for curr_Id in self.loader.id_Images:
-            self.keypointsArrDict[curr_Id] = self.detector.detectAndCompute(
-                self.loader.id_Images[curr_Id], None)[0]
-                
-            self.descriptorsArrDict[curr_Id] = self.detector.detectAndCompute(
-                self.loader.id_Images[curr_Id], None)[1]
-
-        # dopo=datetime.timestamp(datetime.now())
-        # print("TEMPO PER CARICARE : ",len(self.loader.id_Images)," ",dopo-prima)
-        self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
-
-        self.ratio_tresh = 0.9
-
-        self.good_matches = deque()
-
-
-# OOOOOOOOOOOOOOOOOORRRRRRRRRRRRRRRRRRRBBBBBBBBBBBBBBBBBBBBBBBB
-
-    def doAlgorithm(self, img):
-        # print("ORB HARRIS")
-        self.frame = np.asarray(img)
-        # print("frame",self.frame)
-        keypointsFrame, self.descriptorsFrame = self.detector.detectAndCompute(self.frame, None)
-
-        if(np.all(self.descriptorsFrame!=None)):
-            for curr_Id in self.loader.id_Images:
-                knn_matchesFrame = self.matcher.knnMatch(self.descriptorsArrDict[curr_Id], self.descriptorsFrame, 2)
-
-                # cv2.imwrite("frame.png",self.frame)
-                for m, n in knn_matchesFrame:
-                    if m.distance < self.ratio_tresh * n.distance:
-                        self.good_matches.append(m)
-
-                print("PRIMA DI PULIRE HO TROVATO", len(self.good_matches))
-
-                if self.good_matches != None and len(self.good_matches) >= self.orbMinMatches:
-                        print("TROVATO MACCHINARIO: ", curr_Id, "CON ",len(self.good_matches),"MATCHES")
-                        self.good_matches.clear()
-                        return curr_Id
-
-                self.good_matches.clear()
         
 
 class AkazeAlgorithm(AlgorithmChooser):

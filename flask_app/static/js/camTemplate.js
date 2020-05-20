@@ -49,7 +49,7 @@ $(document).ready(function() {
             icon: 'icon-contacts',
             title: json.name,
             displayMode: 2,
-            message: 'Ho riconosciuto questa immagine </br>'+ json.model+ json.type,
+            message: 'Ho riconosciuto questa immagine </br>'+ json.model+" "+json.type,
             position: 'topCenter',
             transitionIn: 'flipInX',
             transitionOut: 'flipOutX',

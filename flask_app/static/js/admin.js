@@ -320,6 +320,7 @@ function manage(id, name, model, type, floor) {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Cancella Il macchinario',
         cancelButtonText: 'Annulla',
+        
     }).then((result) => {
         if (result.value) {
 
