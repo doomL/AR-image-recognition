@@ -28,11 +28,6 @@ $(document).ready(function() {
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
 
-
-    // socket.on('connect', function() {
-    //     console.log('Connected!');
-
-    // });
     socket.on('connection', (socketServer) => {
         console.log("connected")
     });

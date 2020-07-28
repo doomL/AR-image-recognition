@@ -318,7 +318,7 @@ function manage(id, name, model, type, floor) {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Cancella Il macchinario',
+        confirmButtonText: 'Cancella Oggetto',
         cancelButtonText: 'Annulla',
         
     }).then((result) => {
@@ -331,7 +331,7 @@ function manage(id, name, model, type, floor) {
                 success: function(response) {
                     Swal.fire(
                         'Cancellato!',
-                        'Il Macchinario è stato eliminato.',
+                        'Oggetto eliminato.',
                         'success',
                     ).then((result) => {
                         if (result.value) {

@@ -19,11 +19,10 @@ import cv2
 
 
 app = Flask(__name__)
-#app.logger.addHandler(logging.StreamHandler(stdout))
 log= logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:''@localhost/arsistant'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://'':''@localhost/alchemy'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
@@ -33,9 +32,6 @@ socketio = SocketIO(app)
 
 #Database Configuration
 database = Database(app)
-
-# loadToDb = False
-# CREO GLI OGGETTI DEL DB
 
 class User(database.db.Model):
 
@@ -96,24 +92,6 @@ class Azienda(database.db.Model):
     def __init__(self,name):
         self.name = name
 
-# popolo il db con le tabelle vuote
-# database.db.create_all() 
-
-# username password azienda mail admin
-# ines = User("Inessina", "ciao","chimica","ines@gmail.com",False)
-#aggiungo così
-# database.db.session.add(ines)
-# database.db.session.commit()
-
-# per vedere se esiste qualcosa con quell'attributo
-# esiste = database.db.session.query(User).filter_by(username='tappeto').first()
-# print("esiste : ",esiste)
-# si elimina così
-# database.db.session.delete(User.query.filter_by(username='Inessina').first())
-# database.db.session.commit()
-
-# database.db.session.add(Imagesdata(1,"a","a"))
-# database.db.session.commit()
 
 def switchAlg(number,loader):
     if number == 0:
@@ -131,16 +109,11 @@ def switchAlg(number,loader):
     elif number == 4:
         return SurfAlgorithm(loader)
 
-        
-
-# 0 = DEFAULT ALGORITHM SURF
-
 
 currAlgorithm = 0 
 algChoose = switchAlg(None,None)
 context = Context(algChoose)
 camera = Camera(context)
-# surfAlg()
 
 
 @socketio.on('connect', namespace='/test')
@@ -148,18 +121,14 @@ def test_connect():
     app.logger.info("client connected")
 
 @socketio.on('input image', namespace='/test')
-def test_message(input):
-    # print(input)
-    input = input.split(",")[1]
-    # print("ENTRO QUAAAAAAAAAAAAA")
-    camera.enqueue_input(input)
-    #camera.enqueue_input(base64_to_pil_image(input))
-    if camera.get_result()!=None:       
-        # recObj = database.db.session.query(Images).filter_by(id=).first()
-        emit('responseImageInfo',getObject(camera.get_result()))
-    # socketio.send(13421)
+def sendRecognizedObj(input):
 
-# DA MODIFICAREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+    input = input.split(",")[1]
+    camera.enqueue_input(input)
+    if camera.get_result()!=None:       
+        emit('responseImageInfo',getObject(camera.get_result()))
+
+
 @app.route('/getObject',methods=['POST','GET']) 
 def getObject(curr_id):
     recognizedObject = database.db.session.query(Images).filter_by(id=curr_id).first()
@@ -171,9 +140,7 @@ def getObject(curr_id):
         'type':recognizedObject.type,
         'floor':recognizedObject.floor,
         'base64':recognizedObject.base64
-
     }
-    # print(obj)
     return json.dumps(obj)
 
 @app.route('/')
